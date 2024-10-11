@@ -18,8 +18,6 @@ function UserForm(){
         console.log(answer);
     }
     useEffect(() => {
-        // const [answers, setAnswers] = useState([]);
-        // const [quest, setQuest] = useState([]);
         const newAnswers = questions.map((q) => ({
             question: q.questionText,
             answer: " "
@@ -147,6 +145,7 @@ function UserForm(){
                             ))
                         }
                         </div>
+                        
                     ))
                     }
                     <div className="user_form_submit">

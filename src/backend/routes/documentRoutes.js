@@ -11,15 +11,15 @@ router.post(`/add_questions/:doc_id`, async (req, res) => {
 
     try {
         // Kiểm tra xem tài liệu đã tồn tại chưa
-        let questionData = await Document.findOne({ id_:docId });
+        let questionData = await Document.findOne({ documentId:docId });
 
         if (!questionData) {
             // Nếu không tồn tại, tạo tài liệu mới
             questionData = new Document({
-                id_: docId,
+                documentId: docId,
                 questions: docs_data.questions || [],
                 documentName: docs_data.document_name || "Untitled form",
-                documentDescription: docs_data.document_description || ""
+                documentDescription: docs_data.document_description || "Add description"
             });
         } else {
             // Cập nhật tài liệu nếu đã tồn tại
@@ -41,12 +41,12 @@ router.get("/data/:doc_id", async (req, res) => {
     const docId = req.params.doc_id;
 
     try {
-        let document = await Document.findById({id_: docId});
+        let document = await Document.findOne({documentId: docId});
         
         // Nếu không tồn tại, tạo document mới
         if (!document) {
             document = new Document({
-                id_: docId,
+                documentId: docId,
                 documentName: "Untitled form",
                 documentDescription:"",
                 questions: [
@@ -78,12 +78,13 @@ router.get("/data/:doc_id", async (req, res) => {
 // Endpoint để lấy tất cả các document
 router.get("/get_all_filenames", async (req, res) => {
     try {
-        const documents = await Document.find({}, { documentName: 1 }); // Lấy chỉ trường document_name
+        const documents = await Document.find({}, { documentName: 1 }); 
         res.send(documents);
     } catch (error) {
         console.error('Error fetching documents:', error);
         res.status(500).send('Error fetching documents.');
     }
 });
+
 
 module.exports = router;

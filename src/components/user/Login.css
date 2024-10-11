@@ -84,3 +84,17 @@
 .text-center{
   font-size: 18px;
 }
+.eye-icon{
+  border: none;
+  background-color: #eaeaea;
+  padding-right: 20px
+}
+.logout-btn{
+  border: none;
+  background-color: #fff;
+  cursor: pointer;
+  font-size: 14px;
+}
+.logout-btn:hover {
+  color: #ff0000;
+}

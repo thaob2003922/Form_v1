@@ -1,70 +1,24 @@
-// import React, { useState } from 'react';
-// import axios from 'axios';
-// import { useNavigate, Link } from 'react-router-dom';
-// function Signup(){
-//     const history = useNavigate()
-//     const [email, setEmail] = useState('')
-//     const [password, setPassword] = useState('')
-//     // const [username, setUserName] = useState('')
-//     async function submit(e){
-//         e.preventDefault();
-//         try{
-//             await axios.post("http://localhost:8000/signup",{
-//                 email, password
-//             })
-//             .then(res=>{
-//                 if(res.data==="exist"){
-//                     alert("User already exists")
-//                 }
-//                 else if(res.data==="noteexist"){
-//                     history("/Home")
-//                 }
-//             })
-//             .catch(e =>{
-//                 alert("wrong details")
-//                 console.log(e);
-                
-//             })
-//         }
-//         catch(e){
-//             console.log(e);
-            
-//         }
-//     }
-
-//     return(
-//         <div className='login'>
-//             <h1>Login</h1>
-//             <form action="POST">
-//                 <input type='text' onChange={(e)=>{setEmail(e.target.value)}} placeholder='Email' name='' id='' />
-//                 <input type='password' onChange={(e)=>{setPassword(e.target.value)}} placeholder='Password' name='' id='' />
-//                 <input type='submit' onClick={submit}/>
-//             </form>
-//             <>
-//             <br>
-//                 <p>OR</p>
-//             </br>
-//             </>
-//             <Link to='/'>Login</Link>
-//         </div>
-//     )
-// }
-
-// export default Signup
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
 import PersonIcon from '@mui/icons-material/Person';
 import LockIcon from '@mui/icons-material/Lock';
 import EmailIcon from '@mui/icons-material/Email';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 const Signup = () => {
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState(''); 
     const [password, setPassword] = useState('');
     const [message, setMessage] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
     const handleRegister = async (e) => {
         e.preventDefault();
+        if (!validatePassword(password)) {
+            setMessage("Password must have at least 8 characters, including letters and special characters.");
+            return; 
+        }
         try {
             await axios.post('http://localhost:8000/api/users/signup', {
                 username,
@@ -78,7 +32,24 @@ const Signup = () => {
             setMessage('Registration failed! Please try again.');
         }
     };
-
+    
+    const validatePassword = (password) => {
+        const minLength = 8;
+        const hasLetter = /[a-zA-Z]/.test(password);
+        const hasNumber = /\d/.test(password); 
+        const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+        
+        return password.length >= minLength && hasLetter && hasNumber && hasSpecialChar;
+    };
+    
+    const handlePasswordChange = (e) => {
+        const newPassword = e.target.value;
+        setPassword(newPassword);
+    };
+    
+    const togglePasswordVisibility = () => {
+        setShowPassword(!showPassword);
+    };
     return (
         <>
         <div className='form-container'>
@@ -113,13 +84,17 @@ const Signup = () => {
                     <div className='form-group'>
                     <LockIcon className='user-icon'/>
                         <input
-                            type="password"
+                            type={showPassword ? 'text' : 'password'}
                             placeholder="Password"
                             value={password}
-                            onChange={(e) => setPassword(e.target.value)}
+                            // onChange={(e) => setPassword(e.target.value)}
+                            onChange={handlePasswordChange}
                             required
                             autoComplete="current-password"
-                        />
+                        /> 
+                        <button type="button" onClick={togglePasswordVisibility} className='eye-icon'>
+                            {showPassword ? <VisibilityIcon /> : <VisibilityOffIcon />} 
+                        </button>
                     </div>
                     <div className='submit-container'>
                         <button type="submit" className='submit_1'>SignUp</button>

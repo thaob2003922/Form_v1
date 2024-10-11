@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import "./Header.css";
 // import MenuIcon from '@mui/icons-material/Menu';
 import IconButton from '@mui/material/IconButton';
@@ -8,13 +8,16 @@ import AppsIcon from '@mui/icons-material/Apps';
 import Avatar from '@mui/material/Avatar';
 import avatarimage from "../images/avatar.jpg";
 import TemporaryDrawer from "./TemporaryDrawer";
+import Logout from "./user/Logout";
 function Header(){
+    const [showLogout, setShowLogout] = useState(false);
+
+    const toggleLogout = () => {
+        setShowLogout(!showLogout);
+    };
     return (
         <div className="header">
             <div className="header_info">
-                {/* <IconButton>
-                <MenuIcon />
-                </IconButton> */}
                 <TemporaryDrawer />
                 <img src={formimage} style={{height:'40px', width:'40px'}} className="form_image" alt="not showing right now"/>
             <div className="info">
@@ -31,9 +34,14 @@ function Header(){
                 <IconButton>
                 <AppsIcon />
                 </IconButton>
-                <IconButton>
+                <IconButton onClick={toggleLogout}>
                     <Avatar src={avatarimage}/>
                 </IconButton>
+                {showLogout && (
+                    <div className="logout_menu">
+                        <Logout />
+                    </div>
+                )}
             </div>
         </div>
     )

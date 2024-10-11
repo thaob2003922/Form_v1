@@ -21,7 +21,8 @@
     margin-bottom: 8px;
 }
 .user_form_questions{
-    background-color: white;
+    /* background-color: white; */
+    background-color: #F8DAE9;
     border-radius: 8px;
     padding: 30px 25px;
     text-transform: capitalize;

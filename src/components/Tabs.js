@@ -7,6 +7,7 @@ import QuestionForm from './QuestionForm';
 import { IconButton, Switch } from '@mui/material';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { Typography } from "@mui/material";
+import axios from 'axios';
 
 const useStyles = makeStyles({
     root: { flexGrow: 1 },
@@ -22,18 +23,7 @@ const useStyles = makeStyles({
         height: "10px"
     }
 })
-// function TabPanel(props) {
-//     const { children, value, index, ...other } = props;
-//     return (
-//         <div role='tabpanel' hidden={value !== index} id={`simple-tabpanel-${index}`}
-//             aria-labelledby={`simple-tab-${index}`} {...other}
-//         >
-//             {value === index && (
-//                 <div>{children}</div>
-//             )}
-//         </div>
-//     )
-// }
+
 const TabPanel = ({ children, index, value }) => {
     return (
         <div role="tabpanel" hidden={value !== index}>
@@ -41,11 +31,7 @@ const TabPanel = ({ children, index, value }) => {
         </div>
     );
 };
-// TabPanel.propTypes = {
-//     children: PropTypes.node,
-//     index: PropTypes.any.isRequired,
-//     value: PropTypes.any.isRequired
-// }
+
 function allProps(index) {
     return {
         id: `simple-tab-${index}`,
@@ -59,6 +45,20 @@ function CenteredTabs() {
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
+    };
+    const handleSubmit = async (docId) => {
+        const response = await axios.post(`http://localhost:8000/user_response/${docId}`, {
+            answer_data: [
+                { dateTime: new Date().toISOString(), /* các trường khác */ },
+                // Thêm dữ liệu ở đây
+            ],
+            columns: [
+                { header: 'Your Column Name', key: 'yourKey' },
+                // Thêm các cột khác nếu cần
+            ],
+        });
+        // Xử lý phản hồi nếu cần
+        console.log(response.data);
     };
     return (
         <Paper className={classes.root}>
@@ -76,6 +76,7 @@ function CenteredTabs() {
                         <div className="user_form_section">
                             <div className="user_form_questions" style={{display:'flex', flexDirection:'column',marginBottom:"20px"} }>
                                 <div style={{display:'flex', flexDirection:'row',alignItems:"center",justifyContent:"space-between"}}>
+                                <div><button onClick={handleSubmit}>Export to Excel</button></div>
                                 <Typography style={{
                                     fontSize: "15px", fontWeight: "400", letterSpacing: "0.1px", lineHeight: "24px",
                                     paddingBottom: "8px"

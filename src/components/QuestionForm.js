@@ -13,14 +13,14 @@ import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import axios from 'axios';
-// import { v4 as uuidv4 } from 'uuid';
+
 import "./reducer.js"
 import { actionTypes } from './reducer.js';
 import {useStateValue} from './StateProvider.js';
 import { useParams } from 'react-router-dom';
 function QuestionForm() {
     const {id}= useParams();
-    const[{},dispatch] = useStateValue();
+    const[,dispatch] = useStateValue();
     const [questions, setQuestions] = useState(
         [{
             questionText: "How do you feel today?",
@@ -34,16 +34,23 @@ function QuestionForm() {
             required: false
         }]
     )
-    // const handleChange = (event) => {
-    //     setQuestions(event.target.value);
-    //   };
-    const [documentName, setDocName] = useState("Untitled Document");
-    const [doccumentDescription, setDocDesc] = useState("Add Description");
+    const [selectedValue, setSelectedValue] = useState('');
+    const handleChange = (event) => {
+        setSelectedValue(event.target.value);
+    };
+    const [documentName, setDocName] = useState("");
+    const [doccumentDescription, setDocDesc] = useState("");
+    
+    const [value, setValue] = useState('');
+    const handleChangeAddOther = (event) => {
+        setValue(event.target.value); 
+    };
+    const [inputValue, setInputValue] = useState('');
 
     useEffect(()=>{
         async function data_adding(){
             // const id_ = uuidv4();
-            var request = await axios.get(`http://localhost:8000/data/${id}`);
+            var request = await axios.get(`http://localhost:8000/api/documents/data/${id}`);
             var question_data= request.data.questions;
             console.log(question_data);
             var doc_name= request.data.document_name;
@@ -172,15 +179,14 @@ function QuestionForm() {
             type: actionTypes.SET_QUESTION,
             questions: questions
         })
-        // const id_ = uuidv4();
-        // const url = `http://localhost:3000/form/${id_}`;
-        // const parts = url.split('/');
-        // const id_ = parts[parts.length - 1];
-        axios.post(`http://localhost:8000/add_questions/${id}`,{
+        
+        axios.post(`http://localhost:8000/api/documents/add_questions/${id}`,{
             'document_name': documentName,
             'doc_desc': doccumentDescription,
             'questions': questions,
         })
+        
+        
     }
     function questionsUI() {
         return questions.map((ques, i) => (
@@ -211,7 +217,7 @@ function QuestionForm() {
                                                         <div key={j}>
                                                             <div style={{ display: "flex", }}>
                                                                 <FormControlLabel style={{ marginLeft: "5px", marginBottom: "5px" }} disabled control={<input type={ques.questionType}
-                                                                    color='primary' style={{ marginRight: "3px", }} required={ques.type} />} label={
+                                                                    color='primary' style={{ marginRight: "3px", }} required={ques.type} value={inputValue} onChange={(e) => setInputValue(e.target.value)}/>} label={
                                                                         <Typography style={{
                                                                             fontFamily: "Roboto, Arial, sans-serif",
                                                                             fontSize: "13px",
@@ -236,7 +242,7 @@ function QuestionForm() {
                                                     <input className='question' type='text' placeholder='Question' value={ques.questionText}
                                                         onChange={(e) => { changeQuestion(e.target.value, i) }}></input>
                                                     <CropOriginal style={{ color: "#5f6368" }} />
-                                                    <Select className='select' style={{ color: "#5f6368", fontSize: "13px" }} >
+                                                    <Select className='select' style={{ color: "#5f6368", fontSize: "13px" }} value={selectedValue || ''} onChange={handleChange} >
                                                         <MenuItem id='text' value="Text" onClick={() => { addQuestionType(i, "text") }}><Subject style={{ marginRight: "10px" }} /> Paragraph</MenuItem>
                                                         <MenuItem id='checkbox' value="Checbox" onClick={() => { addQuestionType(i, "checkbox") }}><CheckBox style={{ marginRight: "10px", color: "#70757a" }} checked />Checkboxes</MenuItem>
                                                         <MenuItem id='radio' value="Radio" onClick={() => { addQuestionType(i, "radio") }}><Radio style={{ marginRight: "10px", color: "#70757a" }} checked />Muitiple Choice </MenuItem>
@@ -246,7 +252,7 @@ function QuestionForm() {
                                                     <div className='add_question_body' key={j}>
                                                         {
                                                             (ques.questionType !== "text") ?
-                                                                <input type={ques.questionType} style={{ marginRight: "10px" }}></input> :
+                                                                <input type={ques.questionType} style={{ marginRight: "10px" }}  value={inputValue} onChange={(e) => setInputValue(e.target.value)}></input> :
                                                                 <ShortText style={{ marginRight: "10px" }}></ShortText>
                                                         }
                                                         <div>
@@ -255,8 +261,8 @@ function QuestionForm() {
                                                             </input>
                                                         </div>
                                                         <CropOriginal style={{ color: "#5f6368" }} />
-                                                        <IconButton aria-label="delete">
-                                                            <CloseIcon onClick={() => { removeOption(i, j) }} />
+                                                        <IconButton aria-label="delete" onClick={() => { removeOption(i, j) }}>
+                                                            <CloseIcon/>
                                                         </IconButton>
                                                     </div>
                                                 ))}
@@ -266,11 +272,11 @@ function QuestionForm() {
                                                         <FormControlLabel disabled control={
                                                             (ques.questionType !== "text") ?
                                                                 <input type={ques.questionType} color='primary' inputprops={{ 'aria-label': 'secondary checkbox' }}
-                                                                    style={{ marginLeft: "10px", marginRight: "10px" }} disabled /> :
+                                                                    style={{ marginLeft: "10px", marginRight: "10px" }} disabled value={inputValue} onChange={(e) => setInputValue(e.target.value)} /> :
                                                                 <ShortText style={{ marginRight: "10px" }} />
                                                         } label={
                                                             <div>
-                                                                <input type='text' className='text_input' style={{ fontSize: "13px", width: "60px" }} placeholder='Add other'></input>
+                                                                <input type='text' className='text_input' style={{ fontSize: "13px", width: "60px" }} placeholder='Add other' value={value} onChange={handleChangeAddOther}></input>
                                                                 <Button size='small' onClick={() => { addOption(i) }} style={{ textTransform: "none", color: "#4285f4", fontSize: "13px", fontWeight: "600" }}>Add option</Button>
                                                             </div>
                                                         }
@@ -324,8 +330,8 @@ function QuestionForm() {
                 <div className='section'>
                     <div className='question_title_section'>
                         <div className='ques_form_top'>
-                            <input className='ques_form_top_name' type='text' style={{ color: "black" }} placeholder='Untitled document' onChange={(e)=>{setDocName(e.target.value)}}></input>
-                            <input className='ques_form_top_desc' type='text' placeholder='Form description' onChange={(e)=>{setDocDesc(e.target.value)}}></input>
+                            <input className='ques_form_top_name' type='text' style={{ color: "black" }} placeholder='Untitled document' value={documentName} onChange={(e)=>{setDocName(e.target.value)}}></input>
+                            <input className='ques_form_top_desc' type='text' placeholder='Add description' value={doccumentDescription} onChange={(e)=>{setDocDesc(e.target.value)}}></input>
                         </div>
                     </div>
                     <DragDropContext onDragEnd={onDragEnd}>

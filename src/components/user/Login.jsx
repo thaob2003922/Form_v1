@@ -4,10 +4,13 @@ import { useNavigate, Link } from 'react-router-dom';
 import './Login.css'
 import PersonIcon from '@mui/icons-material/Person';
 import LockIcon from '@mui/icons-material/Lock';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 const Login = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [message, setMessage] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -22,7 +25,9 @@ const Login = () => {
             setMessage('Login failed!');
         }
     };
-
+    const togglePasswordVisibility = () => {
+        setShowPassword(!showPassword);
+    };
     return (
         <>
         <div className='form-container'>
@@ -45,12 +50,15 @@ const Login = () => {
                     <div className='form-group'>
                     <LockIcon className='user-icon'/>
                     <input
-                        type="password"
+                        type={showPassword ? 'text' : 'password'}
                         placeholder="Password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         autoComplete="current-password"
                     />
+                    <button type="button" onClick={togglePasswordVisibility} className='eye-icon'>
+                        {showPassword ? <VisibilityIcon /> : <VisibilityOffIcon />} 
+                    </button>
                     </div>
                     <div className='forgot-pass'>Forgot Password?</div>
                     <div className='submit-container'>

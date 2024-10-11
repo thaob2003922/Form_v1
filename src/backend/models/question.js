@@ -6,7 +6,7 @@ const optionSchema = new mongoose.Schema({
 module.exports = optionSchema;
 
 const questionSchema = new mongoose.Schema({
-    id_: { type: mongoose.Schema.Types.ObjectId, auto: false },
+    documentId: { type: String, auto: false },
     questionText: { type: String },
     questionType: { type: String },
     options: [optionSchema],
