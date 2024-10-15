@@ -8,22 +8,25 @@ import "./Mainbody.css"
 import doc_image from "../images/party_invitation.png"
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-
+import EditIcon from '@mui/icons-material/Edit'; 
+import DeleteIcon from '@mui/icons-material/Delete'; 
 function Mainbody(){
     const navigate = useNavigate();
     
     function navigate_to(docname){
-        var fname = docname.split('.');
-        // console.log(typeof docname, docname);
-        navigate("/form/" + fname[0])
+        console.log(docname)
+        // /form/[id]
+        navigate("/form/" + docname.documentId)
     }
     
     const [files, setFiles] = useState([]);
-    
+    const [menuOpen, setMenuOpen] = useState(null);
     const filenames = async () => {
         try {
             const request = await axios.get("http://localhost:8000/api/documents/get_all_filenames");
             let filenames = request.data;
+            console.log('filenames:', filenames);
+            
             setFiles(filenames);
         } catch (error) {
             console.error("Error fetching filenames:", error);
@@ -32,6 +35,30 @@ function Mainbody(){
     useEffect(() => {
         filenames();
     }, []); 
+
+    const handleDelete = async (docId) => {
+        try {
+            const response = await axios.delete(`http://localhost:8000/api/documents/delete_document/${docId}`);
+            console.log(response.data.message); // Thông báo thành công
+            await filenames(); 
+            navigate("/");
+        } catch (error) {
+            console.error('Error deleting document:', error.response?.data?.message || error.message);
+        }
+    };
+
+    const handleEdit = (docId) => {
+        // console.log("Chỉnh sửa tài liệu với ID:", docId);
+        // // Thêm logic chỉnh sửa tại đây
+    };
+    const currentDateTime = new Date().toLocaleString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        // hour: '2-digit',
+        // minute: '2-digit',
+        // hour12: true, // sử dụng 12 giờ (AM/PM)
+    });
     return (
         <div className='mainbody'>
             <div className='mainbody_top'>
@@ -63,9 +90,39 @@ function Mainbody(){
                         <div className='doc_content'>
                             <div className='content_left'>
                                 <StorageIcon style={{color:"white",fontSize:"12px",backgroundColor:"6E2594",padding:"3px",marginRight:"3px",borderRadius:"2px"}}/>
-                                Opend 23 Sep 2024
+                                Opened {currentDateTime}
                             </div>
-                            <MoreVertIcon style={{fontSize:"16px", color:"grey"}}/>
+                            {/* <div className='content_right'>
+                            <MoreVertIcon  
+                                style={{fontSize:"16px", color:"grey"}}
+                            />
+                            </div> */}
+                    
+                            <div className='content_right'>
+                                <MoreVertIcon  
+                                    onClick={(e) => {
+                                        e.stopPropagation(); // Ngăn không cho sự kiện click lan ra ngoài
+                                        setMenuOpen(menuOpen === index ? null : index); // Chuyển đổi trạng thái menu
+                                        }}
+                                    style={{ fontSize: "16px", color: "grey", cursor: "pointer" }}
+                                />
+                                {menuOpen === index && (
+                                <div className="dropdown-menu" style={{ position: 'absolute', background: 'white', border: '1px solid grey', borderRadius: '4px', marginTop: '8px', zIndex: 1000 }}>
+                                    <div 
+                                        onClick={() => { handleEdit(ele.documentId); setMenuOpen(null); }} 
+                                        style={{ padding: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center'}}
+                                    >
+                                    <EditIcon style={{ marginRight: '4px' }} />Edit name
+                                    </div>
+                                    <div 
+                                        onClick={() => { handleDelete(ele.documentId); setMenuOpen(null); }} 
+                                        style={{ padding: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center', color: 'red' }}
+                                    >
+                                    <DeleteIcon style={{ marginRight: '4px' }} />Delete
+                                    </div>
+                                </div>
+                                    )}
+                            </div>
                         </div>
                     </div>
                 </div>))

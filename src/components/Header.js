@@ -15,6 +15,7 @@ function Header(){
     const toggleLogout = () => {
         setShowLogout(!showLogout);
     };
+    
     return (
         <div className="header">
             <div className="header_info">

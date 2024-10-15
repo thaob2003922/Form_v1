@@ -3,11 +3,12 @@ import { makeStyles } from '@mui/styles';
 import Paper from '@mui/material/Paper';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
-import QuestionForm from './QuestionForm';
+// import QuestionForm from './QuestionForm';
 import { IconButton, Switch } from '@mui/material';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { Typography } from "@mui/material";
 import axios from 'axios';
+// import { useParams } from 'react-router-dom';
 
 const useStyles = makeStyles({
     root: { flexGrow: 1 },
@@ -42,24 +43,56 @@ function allProps(index) {
 function CenteredTabs() {
     const classes = useStyles();
     const [value, setValue] = React.useState(0);
-
+    // const {id}= useParams();
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
-    const handleSubmit = async (docId) => {
-        const response = await axios.post(`http://localhost:8000/user_response/${docId}`, {
-            answer_data: [
-                { dateTime: new Date().toISOString(), /* các trường khác */ },
-                // Thêm dữ liệu ở đây
-            ],
-            columns: [
-                { header: 'Your Column Name', key: 'yourKey' },
-                // Thêm các cột khác nếu cần
-            ],
-        });
-        // Xử lý phản hồi nếu cần
-        console.log(response.data);
+    
+    const handleSubmit = async (id) => {
+        try {
+            // Lấy dữ liệu câu hỏi
+            const questionsResponse = await axios.get(`http://localhost:8000/api/documents/get_all_filenames`); 
+            
+            const questions = questionsResponse.data;
+    
+            // Tạo mảng columns từ dữ liệu câu hỏi
+            const columns = questions.map(question => ({
+                header: question.questionText,
+                key: question.questionType === 'multiple' ? 'options' : 'answer' // Tùy thuộc vào loại câu hỏi
+            }));
+    
+            // Tạo answer_data
+            const answer_data = questions.map(question => ({
+                dateTime: new Date().toISOString(),
+                // Thêm các trường khác tùy thuộc vào loại câu hỏi
+            }));
+    
+            // Gửi dữ liệu đến API
+            const response = await axios.post(`http://localhost:8000/api/userResponse/user_response/${id}`, {
+                answer_data,
+                columns,
+            });
+    
+            // Xử lý phản hồi nếu cần
+            console.log(response.data);
+            //  // Tải xuống file Excel sau khi hoàn tất việc gửi
+            // const downloadResponse = await axios.get(`http://localhost:8000/api/userResponse/download/${docId}`, {
+            //     responseType: 'blob', // Để nhận dữ liệu nhị phân
+            // });
+
+            // // Tạo URL cho file Excel
+            // const url = window.URL.createObjectURL(new Blob([downloadResponse.data]));
+            // const link = document.createElement('a');
+            // link.href = url;
+            // link.setAttribute('download', `${docId}.xlsx`); 
+            // document.body.appendChild(link);
+            // link.click(); // Tự động nhấp vào link để tải file
+            // link.remove(); 
+        } catch (error) {
+            console.error("Error during submit:", error);
+        }
     };
+    
     return (
         <Paper className={classes.root}>
             <Tabs className={classes.tabs} textColor='primary' indicatorColor='primary' centered value={value} onChange={handleChange}>
@@ -68,7 +101,7 @@ function CenteredTabs() {
             </Tabs>
 
             <TabPanel value={value} index={0}>
-                {/* <QuestionForm /> */}
+                {/*<QuestionForm />*/}
             </TabPanel>
             <TabPanel value={value} index={1}>
                 <div className='submit' style={{ height: "76vh" }}>

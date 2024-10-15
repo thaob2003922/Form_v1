@@ -19,8 +19,8 @@ function Template(){
         var question_list=[{questionText:"Question",questionType:"radio",options:[{optionText:"Option 1"}],
             open: true, required: false}]
         axios.post(`http://localhost:8000/api/documents/add_questions/${create_form_id}`,{
-            'document_name':'untitled_question',
-            'doc_desc': 'Add description',
+            'document_name':'',
+            'doc_desc': '',
             'questions': question_list
         })
         navigate(`/form/${create_form_id}`); 

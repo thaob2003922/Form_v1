@@ -2,7 +2,6 @@ const fs = require('fs')
 const path = require('path')
 const express= require('express')
 const app = express()
-const Excel = require('exceljs')
 const jwt = require('jsonwebtoken');
 var cors = require('cors')
 var bodyParser = require('body-parser')
@@ -59,8 +58,8 @@ app.use('/api/users', userRoutes);
 const documentRoutes = require('./routes/documentRoutes.js');
 app.use('/api/documents', documentRoutes);
 
-// const userResponseRoutes = require('./routes/userResponseRoutes.js');
-// app.use('/api/userResponse', userResponseRoutes);
+const userResponseRoutes = require('./routes/userResponseRoutes.js');
+app.use('/api/userResponse', userResponseRoutes);
 
 app.listen(8000,()=>{
     console.log("port connected");
