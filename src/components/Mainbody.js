@@ -21,13 +21,19 @@ function Mainbody(){
     
     const [files, setFiles] = useState([]);
     const [menuOpen, setMenuOpen] = useState(null);
+    const token = localStorage.getItem('token');
     const filenames = async () => {
         try {
-            const request = await axios.get("http://localhost:8000/api/documents/get_all_filenames");
-            let filenames = request.data;
+            const response = await axios.get("http://localhost:8000/api/documents/get_all_filenames", {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`, // Đảm bảo bạn gửi token
+                },
+            });
+            let filenames = response.data;
             console.log('filenames:', filenames);
             
-            setFiles(filenames);
+            setFiles(filenames.documents);
         } catch (error) {
             console.error("Error fetching filenames:", error);
         }
@@ -82,10 +88,10 @@ function Mainbody(){
                 }}>
                     <img className="doc_image" src={doc_image} alt=''/>
                     <div className='doc_card_content'>
-                    <h5 style={{ overflow: "hidden",
+                    <h4 style={{ overflow: "hidden",
                                 whiteSpace: "nowrap",
                                 textOverflow: "ellipsis"}}> 
-                    {ele?.documentName ? ele.doccumentName : "Untitled Doc"}</h5>
+                    {ele?.documentName ? ele.documentName : "Untitled Doc"}</h4>
                    
                         <div className='doc_content'>
                             <div className='content_left'>

@@ -30,7 +30,7 @@ router.post('/login', async (req, res) => {
         if (!isMatch) return res.status(400).json({ message: 'Invalid credentials' });
 
         // Tạo token JWT
-        const token = jwt.sign({ id: user._id }, 'your_jwt_secret', { expiresIn: '1h' });
+        const token = jwt.sign({ id: user._id, username: user.username }, 'your_jwt_secret', { expiresIn: '1h' });
         console.log(token);
         res.json({ token });
         
@@ -53,7 +53,14 @@ const authenticateToken = (req, res, next) => {
 
 // Route bảo vệ yêu cầu người dùng đã đăng nhập
 router.get('/protected', authenticateToken, (req, res) => {
-    res.json({ message: 'Welcome to the protected route', user: req.user });
+    const token = req.headers['authorization'];
+    const decoded = jwt.decode(token); // Giải mã để lấy thông tin
+    res.json({
+        message: 'Welcome to the protected route',
+        user: req.user,
+        expiresIn: decoded.exp ? new Date(decoded.exp * 1000).toString() : 'No expiry info'
+    });
 });
+
 
 module.exports = router;

@@ -4,13 +4,17 @@ import { useStateValue } from "./StateProvider";
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { Button, Typography } from "@mui/material";
+import { useParams } from 'react-router-dom';
+
 function UserForm(){
-    // var quest =[];
     // var post_answer =[];
+    const { id } = useParams();
+    const { documentId, userId } = useParams();
     var navigate = useNavigate();
     var [answer, setAnswer] = useState();
     var [quest, setQuest] = useState([]);
     var [{questions, doc_name, doc_desc},dispatch] = useStateValue();
+    var post_answer_data ={}
     function select(que, option) {
         var k = answer.findIndex((ele)=>(ele.question === que))
         answer[k].answer = option;
@@ -30,24 +34,8 @@ function UserForm(){
         }));
         setQuest(newQuest);
     }, [questions]); 
-    // useEffect(()=>{
-    //     questions.map((q)=>{
-    //         return(
-    //             answer.push({
-    //                 "question": q.questionText,
-    //                 "answer": " "
-    //             })
-    //         )
-           
-    //     })
-    //     questions.map((q, index)=>{
-    //         return (
-    //             quest.push({"header": q.questionText,"key": q.questionText})
-    //         )
-            
-    //     })
-    // },[])
-    var post_answer_data ={}
+    
+   
     function selectinput(que, option){
         var k = answer.findIndex((ele)=>(ele.question === que))
         answer[k].answer= option;
@@ -70,17 +58,24 @@ function UserForm(){
         answer[k].answer= d.join(",")
         setAnswer(answer)
     }
-    function submit(){
-        answer.map((ele)=>{
-            return (
-                post_answer_data[ele.question]= ele.answer
-            )
+    
+    function submit() {
+        const post_answer_data = {};
+        answer.forEach(ele => {
+            post_answer_data[ele.question] = ele.answer;
+        });
+        axios.post(`http://localhost:8000/api/userResponse/submit/${id}`, {
+            // documentId: documentId, // Thay thế bằng ID tài liệu
+            userId: userId,         // Thay thế bằng ID người dùng
+            answers: post_answer_data
         })
-        axios.post(`http://localhost:8000/user_response/${doc_name}`,{
-            "columm": quest,
-            "answer_data": [post_answer_data]
+        .then(response => {
+            console.log(response.data);
+            navigate(`/submitted`);
         })
-        navigate(`/submitted`)
+        .catch(error => {
+            console.error("Error submitting answers: ", error);
+        });
     }
 
     return(

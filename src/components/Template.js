@@ -12,7 +12,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { useNavigate } from 'react-router-dom';
 function Template(){
     const navigate = useNavigate();
-
+    const token = localStorage.getItem('token');
     const createForm = () => {
         const create_form_id = uuidv4();
         console.log(create_form_id);
@@ -22,6 +22,12 @@ function Template(){
             'document_name':'',
             'doc_desc': '',
             'questions': question_list
+        },
+        {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`, // Đảm bảo bạn gửi token
+            }
         })
         navigate(`/form/${create_form_id}`); 
     }

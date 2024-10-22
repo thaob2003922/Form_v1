@@ -6,7 +6,11 @@ const jwt = require('jsonwebtoken');
 var cors = require('cors')
 var bodyParser = require('body-parser')
 app.use(bodyParser.json())
-app.use(cors())
+// app.use(cors())
+app.use(cors({
+    origin: '*',
+    allowedHeaders: ['Authorization', 'Content-Type'], 
+}));
 app.use(function(req,res, next){
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers","Origin, X-Requested-With, Content-Type, Accept");

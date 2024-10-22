@@ -22,6 +22,7 @@ function QuestionForm() {
     const { id } = useParams();
     const [{doc_name}, dispatch] = useStateValue();
     const [documentExists, setDocumentExists] = useState(true);
+    const token = localStorage.getItem('token');
     const [questions, setQuestions] = useState(
         [{
             questionText: "Question",
@@ -35,7 +36,7 @@ function QuestionForm() {
         }]
     )
 
-    console.log('docNameInStore ', doc_name);
+    // console.log('docNameInStore ', doc_name);
     
     const [selectedValue, setSelectedValue] = useState('');
     const handleChange = (event) => {
@@ -51,20 +52,30 @@ function QuestionForm() {
     const [inputValue, setInputValue] = useState('');
 
     useEffect(() => {setDocName(doc_name)},[doc_name])
-
     useEffect(() => {
-        console.log('data_added' , Date.now());
+        // console.log('data_added' , Date.now());
         
         async function data_adding() {
             try {
-                const document = await axios.get(`http://localhost:8000/api/documents/get_document_by_id/${id}`)
-                console.log('document_in_db', document);
+                const document = await axios.get(`http://localhost:8000/api/documents/get_document_by_id/${id}`,{
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`, // Đảm bảo bạn gửi token
+                    },
+                })
+                // console.log('document_in_db', document);
                 
                 if (document) {
-                    console.log('adding document ', Date.now());
-                    const response = await axios.get(`http://localhost:8000/api/documents/data/${id}`);
+                    // console.log('adding document ', Date.now());
+                    const response = await axios.get(`http://localhost:8000/api/documents/data/${id}`,{
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${token}`, // Đảm bảo bạn gửi token
+                            }
+                        
+                    });
 
-                    console.log('response_in_query ', response.data);
+                    // console.log('response_in_query ', response.data);
                     const question_data = response.data.questions;
                     const doc_name = response.data.documentName;
                     const doc_descip = response.data.documentDescription;
@@ -88,14 +99,6 @@ function QuestionForm() {
         }
         data_adding();
     }, [id]);
-    // const handleDelete = async (id) => {
-    //     try {
-    //         await axios.delete(`http://localhost:8000/api/documents/delete_document/${id}`);
-    //         setDocumentExists(false); // Đánh dấu tài liệu đã bị xóa
-    //     } catch (error) {
-    //         console.error("Error deleting document", error);
-    //     }
-    // };
 
     function changeQuestion(text, i) {
         var newQuestion = [...questions];
@@ -210,9 +213,14 @@ function QuestionForm() {
             doc_desc: documentDescription
         })
         axios.post(`http://localhost:8000/api/documents/add_questions/${id}`, {
-            'document_name': documentName,
-            'doc_desc': documentDescription,
-            'questions': questions,
+            document_name: documentName,
+            doc_desc: documentDescription,
+            questions: questions,
+        }, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`, // Đảm bảo bạn gửi token
+            }
         })
 
 

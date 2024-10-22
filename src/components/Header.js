@@ -6,7 +6,7 @@ import formimage from "../images/survey_logo.png";
 import SearchIcon from '@mui/icons-material/Search';
 import AppsIcon from '@mui/icons-material/Apps';
 import Avatar from '@mui/material/Avatar';
-import avatarimage from "../images/avatar.jpg";
+import avatarimage from "../images/defaultAvt.jpg";
 import TemporaryDrawer from "./TemporaryDrawer";
 import Logout from "./user/Logout";
 function Header(){

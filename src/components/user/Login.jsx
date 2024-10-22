@@ -6,10 +6,14 @@ import PersonIcon from '@mui/icons-material/Person';
 import LockIcon from '@mui/icons-material/Lock';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import { jwtDecode } from 'jwt-decode';
+
+
 const Login = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [message, setMessage] = useState('');
+    // const [userId, setUserId] = useState(null);
     const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
     const handleLogin = async (e) => {
@@ -18,9 +22,15 @@ const Login = () => {
             const response = await axios.post('http://localhost:8000/api/users/login', { username, password });
             const token = response.data.token;
             localStorage.setItem('token', token);
-            setMessage('Logged in successfully!');
-            navigate("/")
-            alert("Logged in successfully! Welcome to the WWPigeon website!")
+            // setMessage('Logged in successfully!');
+
+            // Giải mã token để lấy userId
+            const decodedToken = jwtDecode(token);
+            const userId = decodedToken.userId; // Hoặc là decodedToken.userId nếu bạn lưu userId dưới tên đó
+            console.log("Decoded Token:", decodedToken);
+            localStorage.setItem('userId', userId);
+            alert("Logged in successfully! Welcome to the WWPigeon website!");
+            navigate("/");
         } catch (err) {
             setMessage('Login failed!');
         }

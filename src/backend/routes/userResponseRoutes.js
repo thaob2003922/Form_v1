@@ -3,6 +3,7 @@ const router = express.Router();
 const Excel = require('exceljs');
 const fs = require('fs');
 const path = require('path');
+const UserResponse = require('../models/user-response');
 
 const cleanWorksheetName = (name) => {
     const invalidChars = /[\\*?":/[\]]/g; // Ký tự không hợp lệ
@@ -55,8 +56,6 @@ router.post('/user_response/:doc_id', async (req, res) => {
     });
 });
 
-
-
 // Hàm để tải file Excel
 router.get('/download/:doc_id', async (req, res) => {
     const docId = req.params.doc_id;
@@ -79,5 +78,27 @@ router.get('/download/:doc_id', async (req, res) => {
         res.status(404).send("File not found.");
     }
 });
+
+// Cập nhật router với doc_id
+router.post('/submit/:doc_id', async (req, res) => {
+    const docId = req.params.doc_id; // Lấy doc_id từ URL
+    const { userId, answers } = req.body; // Lấy userId và answers từ body
+
+    // Tạo một bản ghi mới
+    const newResponse = new UserResponse({
+        documentId: docId, // Sử dụng docId từ params
+        userId,
+        answers,
+    });
+
+    try {
+        await newResponse.save(); // Lưu vào MongoDB
+        res.status(201).send('Answers submitted successfully.');
+    } catch (err) {
+        console.error("Error saving answers: ", err);
+        res.status(500).send("Error saving answers.");
+    }
+});
+
 
 module.exports = router;

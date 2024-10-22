@@ -14,11 +14,13 @@ import { Button } from '@mui/material';
 import { Link } from "react-router-dom";
 import { useStateValue } from "./StateProvider";
 import { useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 function Formheader(){
     const navigate = useNavigate();
+    const { id } = useParams();
     const [{doc_name},dispatch] = useStateValue();
-    function navigates(){
-        navigate("/response")
+    function navigates() {
+        navigate(`/response/${id}`); 
     }
     return(
         <div className='form_header'>
@@ -35,7 +37,7 @@ function Formheader(){
                 <IconButton>
                     <ColorLensIcon className='form_header_icon'/>
                 </IconButton>
-                <IconButton onClick={navigates}>
+                <IconButton onClick={() => navigates()}>
                     <VisibilityIcon className='form_header_icon'/>
                 </IconButton>
                 <IconButton>

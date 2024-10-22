@@ -22,7 +22,7 @@ function App() {
           <Route path="/login" element={<Login/>}></Route>
           <Route path="/signup" element={<Signup/>}></Route>
           <Route path="/form/:id" element={<><Formheader/> <CenteredTabs /> <QuestionForm/></>}></Route>
-          <Route path="/response" element={<UserForm/>}></Route>
+          <Route path="/response/:id" element={<UserForm/>}></Route>
           <Route path="/" element={
             <ProtectedPage/> 
           }> 
