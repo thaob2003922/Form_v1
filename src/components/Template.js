@@ -7,7 +7,7 @@ import "./Template.css"
 import axios from 'axios';
 import blank from "../images/blank.png"
 import party from "../images/party_invitation.png"
-import contact from "../images/contact.png"
+import contact from "../images/contact_information.png"
 import { v4 as uuidv4 } from 'uuid';
 import { useNavigate } from 'react-router-dom';
 function Template(){

@@ -62,5 +62,36 @@ router.get('/protected', authenticateToken, (req, res) => {
     });
 });
 
+// Cấu hình multer để lưu trữ ảnh
+// const storage = multer.diskStorage({
+//     destination: (req, file, cb) => {
+//         cb(null, 'uploads/'); // Thư mục để lưu ảnh
+//     },
+//     filename: (req, file, cb) => {
+//         cb(null, `${Date.now()}-${file.originalname}`); // Đổi tên file để tránh trùng lặp
+//     }
+// });
+// const upload = multer({ storage });
+// // API để đổi ảnh đại diện
+// router.post('/account-management/avatar', authenticateToken, upload.single('avatar'), async (req, res) => {
+//     const currentUser = req.currentUser;
+//     const avatarPath = req.file.path; // Đường dẫn tới file đã upload
+
+//     try {
+//         // Cập nhật ảnh đại diện trong cơ sở dữ liệu
+//         const user = await User.findById(currentUser.id);
+//         if (!user) {
+//             return res.status(404).json({ message: 'User not found' });
+//         }
+
+//         user.avatar = avatarPath; // Giả sử bạn đã có trường 'avatar' trong model User
+//         await user.save();
+
+//         res.status(200).json({ message: 'Avatar updated successfully', avatar: avatarPath });
+//     } catch (error) {
+//         console.error(error);
+//         res.status(500).json({ message: 'Error updating avatar', error });
+//     }
+// });
 
 module.exports = router;

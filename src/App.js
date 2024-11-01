@@ -3,7 +3,6 @@ import "./App.css"
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Formheader from "./components/Formheader";
 import CenteredTabs from "./components/Tabs";
-import QuestionForm from "./components/QuestionForm";
 import UserForm from "./components/UserForm";
 import Login from "./components/user/Login";
 import { useStateValue } from "./components/StateProvider";
@@ -11,9 +10,10 @@ import { useStateValue } from "./components/StateProvider";
 // import Logout from "./components/user/Logout";
 import Signup from "./components/user/Signup";
 import ProtectedPage from "./components/ProtectedPage";
+import Statistics from "./components/sidebar/Statistics";
 function App() {
   const [ {doc_name}, dispatch] = useStateValue();
-  console.log('store ', doc_name);
+  // console.log('store ', doc_name);
   
   return (
     <div className='app'>
@@ -21,17 +21,14 @@ function App() {
         <Routes>
           <Route path="/login" element={<Login/>}></Route>
           <Route path="/signup" element={<Signup/>}></Route>
-          <Route path="/form/:id" element={<><Formheader/> <CenteredTabs /> <QuestionForm/></>}></Route>
+          <Route path="/form/:id" element={<> <Formheader/> <CenteredTabs/> </>}></Route>
           <Route path="/response/:id" element={<UserForm/>}></Route>
           <Route path="/" element={
             <ProtectedPage/> 
           }> 
           </Route>
-
-          {/* <Route path="/" element={
-            <><Header /><Template /><Mainbody /></>
-          }> 
-          </Route> */}
+          <Route path="/statistics" element={<Statistics/>}></Route>
+          {/* <Route path="/account-management" element={<AccountManagement/>} /> */}
         </Routes>
       </BrowserRouter>
     </div>

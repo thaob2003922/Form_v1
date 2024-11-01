@@ -1,0 +1,49 @@
+
+table {
+    width: 100%;
+    border-collapse: collapse; /* Kết hợp các đường viền */
+    background-color: #f2f2f2;
+}
+
+th, td {
+    border: 1px solid #ddd; /* Đường viền cho ô */
+    padding: 8px; /* Khoảng cách bên trong ô */
+    text-align: left; /* Căn lề trái */
+}
+
+th {
+    background-color: #f2f2f2; /* Màu nền cho hàng tiêu đề */
+    font-weight: bold; /* Đậm chữ hàng tiêu đề */
+
+}
+
+tr:hover {
+    background-color: #d1cccc; /* Màu nền khi di chuột qua hàng */
+}
+/*Export to Excel*/
+.export-button {
+    display: flex; /* Sử dụng flexbox */
+    align-items: center; /* Căn giữa theo chiều dọc */
+    justify-content: center; /* Căn giữa theo chiều ngang */
+    padding: 6px 10px; /* Thêm padding cho nút */
+    background-color: #4CAF50; /* Màu nền của nút */
+    color: white; /* Màu chữ */
+    border: none; /* Không viền */
+    border-radius: 5px; /* Bo góc */
+    cursor: pointer; /* Con trỏ chuột khi di chuột qua */
+    margin-bottom: 10px;
+}
+
+.export-button:hover {
+    background-color: #45a049; 
+}
+
+.downloadIcon {
+    height: 24px; 
+    width: 24px; 
+}
+
+.button-text {
+    font-weight: bold; /* Chữ đậm */
+}
+

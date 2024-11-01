@@ -9,84 +9,91 @@ import { makeStyles } from '@mui/styles';
 import Divider from '@mui/material/Divider';
 import SettingsIcon from '@mui/icons-material/Settings';
 import HelpIcon from '@mui/icons-material/Help';
-// import formimage from "../images/survey_logo.png";
 import excelsheetimage from "../images/google_sheets.png";
 import docimage from "../images/google_docs.png";
 import slideimage from "../images/wechat_logo.png";
-import driveimage from "../images/wechat_logo.png";
 import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 import "./Drawer.css"
+import EqualizerIcon from '@mui/icons-material/Equalizer';
+// import AccountManagement from "./sidebar/AccountManagement";
+import { Link } from 'react-router-dom';
 const useStyle = makeStyles({
-    listItem:{
-        marginLeft:"20px",fontSize:"14px",fontWeight:"500px",color:"grey"
+    listItem: {
+        marginLeft: "20px", fontSize: "14px", fontWeight: "500px", color: "grey"
     },
-    slideImages:{
-        height:"20px",width:"20px"
+    slideImages: {
+        height: "20px", width: "20px"
     }
 });
-function TemporaryDrawer(){
+function TemporaryDrawer() {
     const classes = useStyle();
     const [state, setState] = React.useState({
         left: false
     })
     const toggleDrawer = (anchor, open) => (event) => {
-        setState({...state, [anchor]: open});
+        setState({ ...state, [anchor]: open });
     };
-    const list = (anchor) =>(
-        <div style={{width: '250px'}} role="presentation">
+    const list = (anchor) => (
+        <div style={{ width: '250px' }} role="presentation">
             <Divider />
             <List>
                 <ListItem>
-                <ListItemText style={{fontSize: "48px", marginLeft:"5px"}}>
-                    <span style={{color:"red",fontWeight:"700px",fontSize:"22px",fontFamily:"'Product Sans',Arial,sans-serif"}}>W</span>
-                    <span style={{color:"yellow",fontWeight:"500px",fontSize:"22px",fontFamily:"'Product Sans',Arial,sans-serif"}}>W</span>
-                    <span style={{color:"blue",fontWeight:"500px",fontSize:"22px",fontFamily:"'Product Sans',Arial,sans-serif"}}>P</span>
-                    <span style={{color:"blue",fontWeight:"500px",fontSize:"22px",fontFamily:"'Product Sans',Arial,sans-serif"}}>i</span>
-                    <span style={{color:"blue",fontWeight:"500px",fontSize:"22px",fontFamily:"'Product Sans',Arial,sans-serif"}}>g</span>
-                    <span style={{color:"blue",fontWeight:"500px",fontSize:"22px",fontFamily:"'Product Sans',Arial,sans-serif"}}>e</span>
-                    <span style={{color:"blue",fontWeight:"500px",fontSize:"22px",fontFamily:"'Product Sans',Arial,sans-serif"}}>o</span>
-                    <span style={{color:"blue",fontWeight:"500px",fontSize:"22px",marginRight:"10px",fontFamily:"'Product Sans',Arial,sans-serif"}}>n</span>
-                    <span style={{color:"#5f6368",fontWeight:"500px",fontSize:"22px",fontFamily:"'Product Sans',Arial,sans-serif"}}>Docs</span>
-                </ListItemText>
+                    <ListItemText style={{ fontSize: "48px", marginLeft: "5px" }}>
+                        <span style={{ color: "red", fontWeight: "700px", fontSize: "22px", fontFamily: "'Product Sans',Arial,sans-serif" }}>W</span>
+                        <span style={{ color: "yellow", fontWeight: "500px", fontSize: "22px", fontFamily: "'Product Sans',Arial,sans-serif" }}>W</span>
+                        <span style={{ color: "blue", fontWeight: "500px", fontSize: "22px", fontFamily: "'Product Sans',Arial,sans-serif" }}>P</span>
+                        <span style={{ color: "blue", fontWeight: "500px", fontSize: "22px", fontFamily: "'Product Sans',Arial,sans-serif" }}>i</span>
+                        <span style={{ color: "blue", fontWeight: "500px", fontSize: "22px", fontFamily: "'Product Sans',Arial,sans-serif" }}>g</span>
+                        <span style={{ color: "blue", fontWeight: "500px", fontSize: "22px", fontFamily: "'Product Sans',Arial,sans-serif" }}>e</span>
+                        <span style={{ color: "blue", fontWeight: "500px", fontSize: "22px", fontFamily: "'Product Sans',Arial,sans-serif" }}>o</span>
+                        <span style={{ color: "blue", fontWeight: "500px", fontSize: "22px", marginRight: "10px", fontFamily: "'Product Sans',Arial,sans-serif" }}>n</span>
+                        <span style={{ color: "#5f6368", fontWeight: "500px", fontSize: "22px", fontFamily: "'Product Sans',Arial,sans-serif" }}>Docs</span>
+                    </ListItemText>
                 </ListItem>
             </List>
             <Divider />
-            <List style={{marginLeft:"8px",marginRight:"8px",marginTop:"15px"}}>
+            <List style={{ marginLeft: "8px", marginRight: "8px", marginTop: "15px" }}>
                 <ListItem className="list_item">
-                    <img src={docimage} className={classes.slideImages} alt=""/>
-                    <div className={classes.listItem}>Docs</div>
-                </ListItem>
-                <ListItem className="list_item">
-                    <img src={excelsheetimage} className={classes.slideImages} alt=""/>
-                    <div className={classes.listItem}>Sheet</div>
-                </ListItem>
-                <ListItem className="list_item">
-                    <img src={slideimage} className={classes.slideImages} alt=""/>
+                    {/* <Link to="/account-management" style={{ textDecoration: 'none', color: 'inherit' }}>
+                        <img src={slideimage} className={classes.slideImages} alt=""/>
+                        <div className={classes.listItem}>Account Management</div>
+                    </Link> */}
+                    <img src={docimage} className={classes.slideImages} alt="" />
                     <div className={classes.listItem}>Account Management</div>
                 </ListItem>
                 <ListItem className="list_item">
-                    <img src={driveimage} className={classes.slideImages} alt=""/>
-                    <div className={classes.listItem}>Statistics</div>
+                    <img src={excelsheetimage} className={classes.slideImages} alt="" />
+                    <div className={classes.listItem}>Sheet</div>
+                </ListItem>
+                <ListItem className="list_item">
+                    <img src={slideimage} className={classes.slideImages} alt="" />
+                    <div className={classes.listItem}>Wechat</div>
                 </ListItem>
             </List>
-            
+
             <Divider />
-            <List style={{marginLeft:"8px",marginRight:"8px",marginTop:"15px"}}>
+            <List style={{ marginLeft: "8px", marginRight: "8px", marginTop: "15px" }}>
                 <ListItem className="list_item">
-                <SettingsIcon />
-                <div style={{marginLeft:"20px",fontSize:"14px"}}>Settings</div>
+                    <SettingsIcon />
+                    <div style={{ marginLeft: "20px", fontSize: "14px" }}>Settings</div>
                 </ListItem>
 
                 <ListItem className="list_item">
-                <HelpIcon />
-                <div style={{marginLeft:"20px",fontSize:"14px"}}>Help & Feedback</div>
+                    <HelpIcon />
+                    <div style={{ marginLeft: "20px", fontSize: "14px" }}>Help & Feedback</div>
                 </ListItem>
             </List>
             <Divider />
-            <List style={{marginLeft:"8px",marginRight:"8px",marginTop:"15px"}}>
+            <List style={{ marginLeft: "8px", marginRight: "8px", marginTop: "15px" }}>
                 <ListItem className="list_item">
-                <NotificationsActiveIcon/>
-                <div style={{marginLeft:"20px",fontSize:"14px"}}>Notifications</div>
+                    <NotificationsActiveIcon />
+                    <div style={{ marginLeft: "20px", fontSize: "14px" }}>Notifications</div>
+                </ListItem>
+                <ListItem className="list_item">
+                    <EqualizerIcon />
+                    <Link to="/statistics" style={{ textDecoration: 'none', color: 'inherit' }}>
+                        <div style={{ marginLeft: "20px", fontSize: "14px" }}>Statistics</div>
+                    </Link>
                 </ListItem>
             </List>
         </div>
@@ -94,13 +101,13 @@ function TemporaryDrawer(){
     return (
         <div>
             <React.Fragment>
-            <IconButton onClick={toggleDrawer('left',true)}>
-                <MenuIcon />
-            </IconButton>
-            <Drawer open={state['left']} onClose={toggleDrawer('left',false)} anchor='left'>
-                {list('left')}
-            </Drawer>
-            </React.Fragment> 
+                <IconButton onClick={toggleDrawer('left', true)}>
+                    <MenuIcon />
+                </IconButton>
+                <Drawer open={state['left']} onClose={toggleDrawer('left', false)} anchor='left'>
+                    {list('left')}
+                </Drawer>
+            </React.Fragment>
         </div>
     )
 }

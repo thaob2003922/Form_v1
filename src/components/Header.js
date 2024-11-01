@@ -4,7 +4,6 @@ import "./Header.css";
 import IconButton from '@mui/material/IconButton';
 import formimage from "../images/survey_logo.png";
 import SearchIcon from '@mui/icons-material/Search';
-import AppsIcon from '@mui/icons-material/Apps';
 import Avatar from '@mui/material/Avatar';
 import avatarimage from "../images/defaultAvt.jpg";
 import TemporaryDrawer from "./TemporaryDrawer";
@@ -15,7 +14,7 @@ function Header(){
     const toggleLogout = () => {
         setShowLogout(!showLogout);
     };
-    
+    const username = localStorage.getItem('username') || 'Guest';
     return (
         <div className="header">
             <div className="header_info">
@@ -32,9 +31,10 @@ function Header(){
                 <input type="text" name="search" placeholder="Search" />
             </div>
             <div className="header_right">
-                <IconButton>
+                {/* <IconButton>
                 <AppsIcon />
-                </IconButton>
+                </IconButton> */}
+                <span className="username-display">{username}</span>
                 <IconButton onClick={toggleLogout}>
                     <Avatar src={avatarimage}/>
                 </IconButton>

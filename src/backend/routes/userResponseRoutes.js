@@ -4,11 +4,7 @@ const Excel = require('exceljs');
 const fs = require('fs');
 const path = require('path');
 const UserResponse = require('../models/user-response');
-
-const cleanWorksheetName = (name) => {
-    const invalidChars = /[\\*?":/[\]]/g; // Ký tự không hợp lệ
-    return name.replace(invalidChars, ''); 
-};
+const jwt = require('jsonwebtoken');
 
 router.post('/user_response/:doc_id', async (req, res) => {
     const docs_data = req.body;
@@ -18,15 +14,14 @@ router.post('/user_response/:doc_id', async (req, res) => {
     console.log('docs_data:', docs_data);
     console.log('name:', name);
 
-    // Làm sạch tên tài liệu
-    const cleanedName = cleanWorksheetName(name);
-
+    // Tạo workbook mới
     const workbook = new Excel.Workbook();
     const data = docs_data.answer_data;
 
-    const worksheet = workbook.addWorksheet(cleanedName); // Sử dụng tên đã làm sạch
+    // Dùng tên tài liệu gốc (cẩn thận với ký tự không hợp lệ)
+    const worksheet = workbook.addWorksheet(name); // Sử dụng tên gốc
     worksheet.columns = [{ header: "Time Stamp", key: "dateTime" }, ...docs_data.columns];
-    
+
     worksheet.columns.forEach(column => {
         if (column.header) {
             column.width = column.header.length < 12 ? 12 : column.header.length;
@@ -41,7 +36,7 @@ router.post('/user_response/:doc_id', async (req, res) => {
         worksheet.addRow(e);
     });
 
-    const filePath = path.join(__dirname, `${cleanedName}.xlsx`); 
+    const filePath = path.join(__dirname, `${name}.xlsx`); 
     await workbook.xlsx.writeFile(filePath);
     
     res.download(filePath, (err) => {
@@ -59,8 +54,10 @@ router.post('/user_response/:doc_id', async (req, res) => {
 // Hàm để tải file Excel
 router.get('/download/:doc_id', async (req, res) => {
     const docId = req.params.doc_id;
-    const cleanedName = cleanWorksheetName(docId);
-    const filePath = path.join(__dirname, `${cleanedName}.xlsx`); // Đảm bảo đường dẫn đúng
+    // const filePath = path.join(__dirname, `${docId}.xlsx`); // Đảm bảo đường dẫn đúng
+    const filePath = path.join('D:', 'luan_van', 'form', 'src', 'backend', 'files', `${docId}.xlsx`);
+    console.log('docId:', docId);
+    console.log('filePath:', filePath);
 
     // Kiểm tra xem file có tồn tại không
     if (fs.existsSync(filePath)) {
@@ -79,26 +76,89 @@ router.get('/download/:doc_id', async (req, res) => {
     }
 });
 
-// Cập nhật router với doc_id
-router.post('/submit/:doc_id', async (req, res) => {
-    const docId = req.params.doc_id; // Lấy doc_id từ URL
-    const { userId, answers } = req.body; // Lấy userId và answers từ body
+// Hàm để lấy user response
+const getUserResponse = async (userResponseId) => {
+    try {
+        return await UserResponse.findById(userResponseId);
+    } catch (error) {
+        console.error("Error fetching user response:", error);
+        throw error; // Ném lại lỗi để xử lý bên ngoài
+    }
+};
 
-    // Tạo một bản ghi mới
-    const newResponse = new UserResponse({
-        documentId: docId, // Sử dụng docId từ params
+// Endpoint để submit user response và trả về user response vừa tạo
+router.post('/submit/:doc_id', async (req, res) => {
+    const { answers } = req.body;
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+
+    if (!token) {
+        return res.status(401).json({ message: 'No token provided' });
+    }
+
+    let currentUser;
+    try {
+        currentUser = await jwt.verify(token, 'your_jwt_secret');
+    } catch (err) {
+        return res.status(403).json({ message: 'Invalid token' });
+    }
+
+    const userId = currentUser.id;
+
+    const userResponse = new UserResponse({
         userId,
+        documentId: req.params.doc_id, // Thêm documentId vào userResponse
         answers,
     });
 
     try {
-        await newResponse.save(); // Lưu vào MongoDB
-        res.status(201).send('Answers submitted successfully.');
-    } catch (err) {
-        console.error("Error saving answers: ", err);
-        res.status(500).send("Error saving answers.");
+        await userResponse.save();
+        const populatedResponse = await getUserResponse(userResponse._id); // Lấy user response đã được populate
+        res.status(201).json({ message: 'Answers saved successfully', userResponse: populatedResponse });
+    } catch (error) {
+        console.error('Error saving answers:', error);
+        res.status(500).json({ message: 'Error saving answers', error });
     }
 });
 
+router.get('/table/document/:docId', async (req, res) => {
+    try {
+        const userResponses = await UserResponse.find({ documentId: req.params.docId });
+        console.log("userResponses table be", userResponses);
+        
+        if (!userResponses.length) {
+            return res.status(404).json({ message: 'No responses found for this document' });
+        }
+        res.json(userResponses);
+    } catch (error) {
+        console.error("Error while getting user feedback:", error);
+        res.status(500).json({ message: 'Server error' });
+    }
+});
+
+router.get('/export/document/:docId', async (req, res) => {
+    try {
+        const userResponses = await UserResponse.find({ documentId: req.params.docId });
+        if (!userResponses.length) {
+            return res.status(404).json({ message: 'Không tìm thấy phản hồi nào cho tài liệu này' });
+        }
+
+        // Định dạng dữ liệu trước khi trả về
+        const formattedResponses = userResponses.flatMap(item => {
+            return Object.entries(item.answers).map(([question, answer]) => ({
+                _id: item._id,
+                userId: item.userId,
+                submittedOn: item.submittedOn,
+                question, // Lưu câu hỏi
+                answer,   // Lưu câu trả lời
+            }));
+        });
+
+        res.json(formattedResponses);
+    } catch (error) {
+        console.error("Lỗi khi lấy phản hồi người dùng:", error);
+        res.status(500).json({ message: 'Lỗi máy chủ' });
+    }
+});
 
 module.exports = router;

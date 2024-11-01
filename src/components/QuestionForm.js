@@ -53,8 +53,6 @@ function QuestionForm() {
 
     useEffect(() => {setDocName(doc_name)},[doc_name])
     useEffect(() => {
-        // console.log('data_added' , Date.now());
-        
         async function data_adding() {
             try {
                 const document = await axios.get(`http://localhost:8000/api/documents/get_document_by_id/${id}`,{
@@ -83,9 +81,6 @@ function QuestionForm() {
                     setDocName(doc_name);
                     setDocDesc(doc_descip);
                     setQuestions(question_data);
-
-                    
-                    
 
                     dispatch({ type: actionTypes.SET_DOC_NAME, doc_name });
                     dispatch({ type: actionTypes.SET_DOC_DESC, doc_desc: doc_descip });

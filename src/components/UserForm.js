@@ -13,8 +13,8 @@ function UserForm(){
     var navigate = useNavigate();
     var [answer, setAnswer] = useState();
     var [quest, setQuest] = useState([]);
-    var [{questions, doc_name, doc_desc},dispatch] = useStateValue();
-    var post_answer_data ={}
+    var [{questions, doc_name, doc_desc}] = useStateValue();
+    const token = localStorage.getItem('token');
     function select(que, option) {
         var k = answer.findIndex((ele)=>(ele.question === que))
         answer[k].answer = option;
@@ -64,14 +64,23 @@ function UserForm(){
         answer.forEach(ele => {
             post_answer_data[ele.question] = ele.answer;
         });
+        console.log("post_answer_data:", post_answer_data);
+        
         axios.post(`http://localhost:8000/api/userResponse/submit/${id}`, {
-            // documentId: documentId, // Thay thế bằng ID tài liệu
-            userId: userId,         // Thay thế bằng ID người dùng
+            documentId: documentId, 
+            userId: userId,         
             answers: post_answer_data
+        }, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`, // Đảm bảo bạn gửi token
+            }
         })
+
         .then(response => {
             console.log(response.data);
-            navigate(`/submitted`);
+            alert('Thank you for your feedback!');
+            navigate(`/`);
         })
         .catch(error => {
             console.error("Error submitting answers: ", error);

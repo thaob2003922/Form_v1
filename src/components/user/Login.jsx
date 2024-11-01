@@ -29,6 +29,9 @@ const Login = () => {
             const userId = decodedToken.userId; // Hoặc là decodedToken.userId nếu bạn lưu userId dưới tên đó
             console.log("Decoded Token:", decodedToken);
             localStorage.setItem('userId', userId);
+            
+            const userUsername = decodedToken.username; // Giả sử bạn có trường này trong token
+            localStorage.setItem('username', userUsername); // Lưu tên đăng nhập
             alert("Logged in successfully! Welcome to the WWPigeon website!");
             navigate("/");
         } catch (err) {

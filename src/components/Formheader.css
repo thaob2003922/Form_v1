@@ -40,3 +40,8 @@
     align-items: center;
     justify-content: space-between;
 }
+.username-display {
+    margin-left: 8px; /* Khoảng cách giữa avatar và tên */
+    font-size: 14px; /* Kích thước chữ */
+    color: #333; /* Màu chữ */
+}

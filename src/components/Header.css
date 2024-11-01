@@ -29,7 +29,7 @@
     flex-direction: row;
     align-items: center;
     background-color: #f4f4f9;
-    width: 700px;
+    width: 650px;
     height: 45px;
     border-radius: 5px;
 }
@@ -51,4 +51,9 @@
     padding: 10px; 
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); 
     z-index: 1000; 
+}
+.username-display {
+    margin-left: 8px; /* Khoảng cách giữa avatar và tên */
+    font-size: 14px; /* Kích thước chữ */
+    color: #333; /* Màu chữ */
 }
