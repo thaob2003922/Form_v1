@@ -136,4 +136,24 @@ router.delete('/delete_document/:doc_id', async (req, res) => {
     }
 });
 
+//Search
+router.get('/search', authenticateToken, async (req, res) => {
+    const { query } = req.query;
+    const currentUser = req.currentUser; // Lấy thông tin người dùng hiện tại từ req
+    console.log("Search query:", query);
+    
+    try {
+        const documents = await Document.find({
+            documentName: { $regex: query, $options: 'i' },
+            userId: currentUser.id // Chỉ tìm tài liệu của người dùng hiện tại
+        });
+
+        res.json(documents);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Server Error');
+    }
+});
+
+
 module.exports = router;

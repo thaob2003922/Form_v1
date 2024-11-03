@@ -276,7 +276,7 @@ function QuestionForm() {
                                                         <CropOriginal style={{ color: "#5f6368" }} />
                                                         <Select className='select' style={{ color: "#5f6368", fontSize: "13px" }} value={selectedValue || ''} onChange={handleChange} >
                                                             <MenuItem id='text' value="Text" onClick={() => { addQuestionType(i, "text") }}><Subject style={{ marginRight: "10px" }} /> Paragraph</MenuItem>
-                                                            <MenuItem id='checkbox' value="Checbox" onClick={() => { addQuestionType(i, "checkbox") }}><CheckBox style={{ marginRight: "10px", color: "#70757a" }} checked />Checkboxes</MenuItem>
+                                                            <MenuItem id='checkbox' value="Checkbox" onClick={() => { addQuestionType(i, "checkbox") }}><CheckBox style={{ marginRight: "10px", color: "#70757a" }} checked />Checkboxes</MenuItem>
                                                             <MenuItem id='radio' value="Radio" onClick={() => { addQuestionType(i, "radio") }}><Radio style={{ marginRight: "10px", color: "#70757a" }} checked />Muitiple Choice </MenuItem>
                                                         </Select>
                                                     </div>

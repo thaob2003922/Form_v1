@@ -32,6 +32,7 @@
     width: 650px;
     height: 45px;
     border-radius: 5px;
+    position: relative; 
 }
 
 .header_search > input {
@@ -56,4 +57,28 @@
     margin-left: 8px; /* Khoảng cách giữa avatar và tên */
     font-size: 14px; /* Kích thước chữ */
     color: #333; /* Màu chữ */
+}
+
+.dropdown {
+    position: absolute; /* Đặt dropdown ở vị trí tuyệt đối */
+    top: 100%; /* Nằm ngay bên dưới input */
+    left: 0;
+    right: 0; /* Để rộng bằng với input */
+    background-color: white; /* Nền trắng */
+    border: 1px solid #ccc; /* Đường viền */
+    border-radius: 4px; /* Bo tròn góc */
+    max-height: 200px; /* Chiều cao tối đa */
+    overflow-y: auto; /* Cuộn nếu nội dung quá nhiều */
+    z-index: 1000; /* Đảm bảo nó nằm trên các phần tử khác */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Bóng đổ nhẹ */
+}
+
+.dropdown div {
+    padding: 10px; /* Khoảng cách bên trong mỗi mục */
+    cursor: pointer; /* Con trỏ khi hover */
+    transition: background-color 0.3s; /* Hiệu ứng chuyển đổi */
+}
+
+.dropdown div:hover {
+    background-color: #f0f0f0; /* Màu nền khi hover */
 }
