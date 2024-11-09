@@ -18,6 +18,42 @@ router.post('/signup', async (req, res) => {
         res.status(500).json({ message: 'Error registering user' });
     }
 });
+// router.post('/signup', async (req, res) => {
+//     const { username, email, password } = req.body;  // Lấy thông tin từ request body
+    
+//     try {
+//         // Kiểm tra xem người dùng đã tồn tại với username hoặc email chưa
+//         const existingUserByUsername = await User.findOne({ username });
+//         if (existingUserByUsername) {
+//             return res.status(400).json({ message: 'Username already exists' });
+//         }
+
+//         const existingUserByEmail = await User.findOne({ email });
+//         if (existingUserByEmail) {
+//             return res.status(400).json({ message: 'Email already exists' });
+//         }
+
+//         // Mã hóa mật khẩu trước khi lưu vào cơ sở dữ liệu (bảo mật)
+//         const hashedPassword = await bcrypt.hash(password, 10);
+
+//         // Tạo một đối tượng người dùng mới với username, email, và mật khẩu đã mã hóa
+//         const newUser = new User({
+//             username,
+//             email,
+//             password: hashedPassword
+//         });
+
+//         // Lưu người dùng vào cơ sở dữ liệu
+//         await newUser.save();
+
+//         // Trả về phản hồi thành công
+//         res.status(201).json({ message: 'User registered successfully' });
+
+//     } catch (err) {
+//         // Nếu có lỗi trong quá trình đăng ký
+//         res.status(500).json({ message: 'Error registering user', error: err });
+//     }
+// });
 
 // Đăng nhập
 router.post('/login', async (req, res) => {

@@ -4,7 +4,7 @@ const Logout = () => {
     const navigate = useNavigate();
     const handleLogout = () => {
         const confirmLogout = window.confirm('Are you sure you want to log out?');
-
+        console.log(confirmLogout); 
         if (confirmLogout) {
             localStorage.removeItem('token');
             alert('Logged out successfully');

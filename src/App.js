@@ -5,15 +5,15 @@ import Formheader from "./components/Formheader";
 import CenteredTabs from "./components/Tabs";
 import UserForm from "./components/UserForm";
 import Login from "./components/user/Login";
-import { useStateValue } from "./components/StateProvider";
+// import { useStateValue } from "./components/StateProvider";
 // import { AuthContext } from './components/utils/auth-context';
 // import Logout from "./components/user/Logout";
 import Signup from "./components/user/Signup";
 import ProtectedPage from "./components/ProtectedPage";
 import Statistics from "./components/sidebar/Statistics";
+import FillForm from "./components/views/FillForm";
 function App() {
-  const [ {doc_name}, dispatch] = useStateValue();
-  // console.log('store ', doc_name);
+  // const [ {doc_name}, dispatch] = useStateValue();
   
   return (
     <div className='app'>
@@ -28,6 +28,7 @@ function App() {
           }> 
           </Route>
           <Route path="/statistics" element={<Statistics/>}></Route>
+          <Route path="/fill-form/:documentId" element={<FillForm/>}></Route>
           {/* <Route path="/account-management" element={<AccountManagement/>} /> */}
         </Routes>
       </BrowserRouter>

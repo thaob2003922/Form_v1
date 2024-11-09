@@ -14,10 +14,14 @@ function Mainbody(){
     const navigate = useNavigate();
     
     function navigate_to(docname){
+        handleClick(docname.documentId);
         console.log(docname)
-        // /form/[id]
+    
         navigate("/form/" + docname.documentId)
     }
+    const handleClick = (documentId) => {
+        localStorage.setItem('documentId', documentId);
+    };
     
     const [files, setFiles] = useState([]);
     const [menuOpen, setMenuOpen] = useState(null);

@@ -6,7 +6,7 @@ import Template from "./Template";
 import Mainbody from "./Mainbody";
 
 const ProtectedPage = () => {
-    const [message, setMessage] = useState('');
+    const [, setMessage] = useState('');
     const [isLoggedIn, setIsLoggedIn] = useState(false); 
     const navigate = useNavigate();
     useEffect(() => {

@@ -7,6 +7,8 @@ import { Button, Typography } from "@mui/material";
 import { useParams } from 'react-router-dom';
 
 function UserForm(){
+    console.log("UserForm");
+    
     // var post_answer =[];
     const { id } = useParams();
     const { documentId, userId } = useParams();
