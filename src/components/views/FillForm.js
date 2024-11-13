@@ -47,24 +47,24 @@ const FillForm = () => {
                 'Authorization': `Bearer ${token}`
             }
         })
-        .then(response => {
-            console.log(response.data);
-            alert('Thank you for your feedback!');
-            
-            // Xóa documentId khỏi localStorage
-            localStorage.removeItem('documentId');
-            
-            // Điều hướng về trang chủ sau khi gửi xong
-            navigate('/');
-        })
-        .catch(error => {
-            console.error('Error submitting answers:', error);
-        });
+            .then(response => {
+                console.log(response.data);
+                alert('Thank you for your feedback!');
+
+                // Xóa documentId khỏi localStorage
+                localStorage.removeItem('documentId');
+
+                // Điều hướng về trang chủ sau khi gửi xong
+                navigate('/');
+            })
+            .catch(error => {
+                console.error('Error submitting answers:', error);
+            });
     };
 
     useEffect(() => {
         if (!token) {
-            setIsLoggedIn(false);  
+            setIsLoggedIn(false);
             return;
         }
 
@@ -80,15 +80,15 @@ const FillForm = () => {
                     'Authorization': `Bearer ${token}`,
                 },
             })
-            .then(response => response.json())
-            .then(data => {
-                setQuestions(data.questions || []);
-                setDocName(data.documentName || "");
-                setDocDesc(data.documentDesc || "");
-            })
-            .catch(error => {
-                console.error('Error fetching questions:', error);
-            });
+                .then(response => response.json())
+                .then(data => {
+                    setQuestions(data.questions || []);
+                    setDocName(data.documentName || "");
+                    setDocDesc(data.documentDesc || "");
+                })
+                .catch(error => {
+                    console.error('Error fetching questions:', error);
+                });
         } else {
             console.log("No documentId found");
             // Điều hướng về trang chủ nếu không có documentId
@@ -101,14 +101,14 @@ const FillForm = () => {
             <div>
                 <h1>Please login to access the form</h1>
                 <div className='isLoggedIn'>
-                    <button onClick={() => navigate('/login')} style={{fontSize: '15px',padding: '15px 25px',}}>  
+                    <button onClick={() => navigate('/login')} style={{ fontSize: '15px', padding: '15px 25px', }}>
                         Login
                     </button>
-                </div> 
+                </div>
             </div>
         );
     }
-    
+
     return (
         <div className="user_form">
             <div className="user_form_section">
@@ -132,26 +132,50 @@ const FillForm = () => {
                                 {qindex + 1}. {question.questionText}
                             </Typography>
 
-                            {question.options.map((ques, index) => (
-                                <div key={index} style={{ marginBottom: "5px" }}>
-                                    <div style={{ display: "flex" }}>
-                                        <div className="form_check">
-                                            <label>
-                                                <input
-                                                    type={question.questionType}
-                                                    name={`question-${qindex}`}
-                                                    value={ques.optionText}
-                                                    className="form_check_input"
-                                                    required={question.required}
-                                                    onChange={() => handleAnswerChange(question.questionText, ques.optionText)} // Cập nhật câu trả lời
-                                                    style={{ marginLeft: "5px", marginRight: "5px" }}
-                                                />{" "}
-                                                {ques.optionText}
-                                            </label>
+                            {
+                                question.questionType === 'text' ? (
+                                    // Render một input duy nhất cho câu hỏi kiểu text
+                                    <div key="text-input" style={{ marginBottom: "5px" }}>
+                                        <div style={{ display: "flex" }}>
+                                            <div className="form_check">
+                                                <label>
+                                                    <input
+                                                        type="text"
+                                                        name={`question-${qindex}`}  // Dùng name động cho câu hỏi kiểu text
+                                                        className="form_check_input"
+                                                        required={question.required}  // Điều kiện bắt buộc (required)
+                                                        onChange={(e) => handleAnswerChange(question.questionText, e.target.value)}  // Cập nhật câu trả lời khi người dùng nhập
+                                                        style={{ marginLeft: "5px", marginRight: "5px", width: "95%" }}  // Điều chỉnh kiểu dáng
+                                                    />
+                                                </label>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            ))}
+                                ) : (
+                                    // Render các tùy chọn nếu không phải câu hỏi kiểu text
+                                    question.options.map((ques, index) => (
+                                        <div key={index} style={{ marginBottom: "5px" }}>
+                                            <div style={{ display: "flex" }}>
+                                                <div className="form_check">
+                                                    <label>
+                                                        <input
+                                                            type={question.questionType}  // Đảm bảo sử dụng đúng loại input theo questionType
+                                                            name={`question-${qindex}`}  // Dùng name động cho mỗi câu hỏi
+                                                            value={ques.optionText}
+                                                            className="form_check_input"
+                                                            required={question.required}  // Điều kiện bắt buộc (required)
+                                                            onChange={() => handleAnswerChange(question.questionText, ques.optionText)}  // Cập nhật câu trả lời khi chọn
+                                                            style={{ marginLeft: "5px", marginRight: "5px" }}  // Căn chỉnh các input
+                                                        />
+                                                        {ques.optionText}
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))
+                                )
+                            }
+
                         </div>
                     ))
                 ) : (

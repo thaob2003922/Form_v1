@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { useNavigate, Link,useLocation  } from 'react-router-dom';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
 import './Login.css'
 import PersonIcon from '@mui/icons-material/Person';
 import LockIcon from '@mui/icons-material/Lock';
@@ -16,25 +16,34 @@ const Login = () => {
     const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
     const location = useLocation();
-    
+
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
             const response = await axios.post('http://localhost:8000/api/users/login', { username, password });
             const token = response.data.token;
             localStorage.setItem('token', token);
-            
+
             // Giải mã token để lấy userId và username
             const decodedToken = jwtDecode(token);
             const userId = decodedToken.userId; //undefined
             localStorage.setItem('userId', userId);
             const userUsername = decodedToken.username;
             localStorage.setItem('username', userUsername);
-           
+            
+            const userResponse = await axios.get('http://localhost:8000/api/users/get-user', {
+                headers: {
+                    'Authorization': `Bearer ${token}`, // Gửi token trong header
+                },
+            });
+    
+            const avatarUrl = userResponse.data.avatarUrl; // Lấy avatar từ API
+            localStorage.setItem('avatarUrl', avatarUrl);
+            console.log("avatarUrl--", avatarUrl);
             // Nếu có redirect path (trường hợp người dùng đang ở một trang yêu cầu đăng nhập)
             const redirectTo = location.state?.from || "/"; // Nếu không có redirect, điều hướng về trang chủ
             alert("Logged in successfully! Welcome to the WWPigeon website!");
-            
+
             const storedDocumentId = localStorage.getItem('documentId');
             if (storedDocumentId) {
                 // Nếu có documentId trong localStorage, điều hướng đến trang điền form
@@ -64,7 +73,7 @@ const Login = () => {
                         <PersonIcon className="user-icon" />
                         <input
                             type="text"
-                            placeholder="Username"
+                            placeholder="Username/Email"
                             value={username}
                             onChange={(e) => setUsername(e.target.value)}
                             autoComplete="username"

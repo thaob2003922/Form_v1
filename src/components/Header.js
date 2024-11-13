@@ -16,12 +16,35 @@ function Header() {
     const toggleLogout = () => {
         setShowLogout(!showLogout);
     };
+    const [avatar, setAvatar] = useState(null);
     const username = localStorage.getItem('username') || 'Guest';
     const [searchTerm, setSearchTerm] = useState('');
     const [results, setResults] = useState([]);
     const token = localStorage.getItem('token');
     const navigate = useNavigate();
     const [noResults, setNoResults] = useState(false);
+
+    useEffect(() => {
+        const storedAvatar = localStorage.getItem('avatarUrl');
+        if (storedAvatar) {
+            setAvatar(storedAvatar);
+        }
+        const storageEventHandler = (e) => {
+            if (e.key === 'avatarUrl') {
+                setAvatar(e.newValue);  // Sử dụng đường dẫn tương đối
+            }
+        };
+
+        window.addEventListener('storage', storageEventHandler);
+
+        // Cleanup khi component unmount
+        return () => {
+            window.removeEventListener('storage', storageEventHandler);
+        };
+    }, []);
+
+
+
     const handleSearch = async () => {
         try {
             const response = await axios.get(`http://localhost:8000/api/documents/search?query=${searchTerm}`, {
@@ -60,6 +83,7 @@ function Header() {
             document.removeEventListener('click', handleOutsideClick);
         };
     }, []);
+
     return (
         <div className="header">
             <div className="header_info">
@@ -69,12 +93,7 @@ function Header() {
                     WWPigeon
                 </div>
             </div>
-            {/* <div className="header_search">
-                <IconButton>
-                    <SearchIcon />
-                </IconButton>
-                <input type="text" name="search" placeholder="Search" />
-            </div> */}
+
             <div className="header_search">
                 <IconButton onClick={handleSearch}>
                     <SearchIcon />
@@ -96,12 +115,9 @@ function Header() {
                 </div>
             </div>
             <div className="header_right">
-                {/* <IconButton>
-                <AppsIcon />
-                </IconButton> */}
                 <span className="username-display">{username}</span>
                 <IconButton onClick={toggleLogout}>
-                    <Avatar src={avatarimage} />
+                    <Avatar src={avatar || avatarimage} />
                 </IconButton>
                 {showLogout && (
                     <div className="logout_menu">

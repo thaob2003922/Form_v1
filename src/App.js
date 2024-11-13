@@ -12,6 +12,7 @@ import Signup from "./components/user/Signup";
 import ProtectedPage from "./components/ProtectedPage";
 import Statistics from "./components/sidebar/Statistics";
 import FillForm from "./components/views/FillForm";
+import AccountManagement from "./components/sidebar/AccountManagement";
 function App() {
   // const [ {doc_name}, dispatch] = useStateValue();
   
@@ -29,7 +30,7 @@ function App() {
           </Route>
           <Route path="/statistics" element={<Statistics/>}></Route>
           <Route path="/fill-form/:documentId" element={<FillForm/>}></Route>
-          {/* <Route path="/account-management" element={<AccountManagement/>} /> */}
+          <Route path="/account-management" element={<AccountManagement/>}></Route>
         </Routes>
       </BrowserRouter>
     </div>

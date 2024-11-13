@@ -1,65 +1,64 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
-const bcrypt = require('bcryptjs');
+// const bcrypt = require('bcryptjs');
 const User = require('../models/user');
 const router = express.Router();
+const multer = require('multer');
+const path = require('path');
 
 // Đăng ký người dùng
-router.post('/signup', async (req, res) => {
-    const { username, password } = req.body;
-    try {
-        const existingUser = await User.findOne({ username });
-        if (existingUser) return res.status(400).json({ message: 'User already exists' });
+// router.post('/signup', async (req, res) => {
+//     const { username, password } = req.body;
+//     try {
+//         const existingUser = await User.findOne({ username });
+//         if (existingUser) return res.status(400).json({ message: 'User already exists' });
 
-        const newUser = new User({ username, password });
+//         const newUser = new User({ username, password });
+//         await newUser.save();
+//         res.status(201).json({ message: 'User registered successfully' });
+//     } catch (err) {
+//         res.status(500).json({ message: 'Error registering user' });
+//     }
+// });
+router.post('/signup', async (req, res) => {
+    const { username, email, password } = req.body;
+    try {
+        const existingUser = await User.findOne({ $or: [{ username }, { email }] });
+        if (existingUser) return res.status(400).json({ message: 'User or email already exists' });
+
+        const newUser = new User({ username, email, password });
         await newUser.save();
         res.status(201).json({ message: 'User registered successfully' });
     } catch (err) {
         res.status(500).json({ message: 'Error registering user' });
     }
 });
-// router.post('/signup', async (req, res) => {
-//     const { username, email, password } = req.body;  // Lấy thông tin từ request body
-    
-//     try {
-//         // Kiểm tra xem người dùng đã tồn tại với username hoặc email chưa
-//         const existingUserByUsername = await User.findOne({ username });
-//         if (existingUserByUsername) {
-//             return res.status(400).json({ message: 'Username already exists' });
-//         }
-
-//         const existingUserByEmail = await User.findOne({ email });
-//         if (existingUserByEmail) {
-//             return res.status(400).json({ message: 'Email already exists' });
-//         }
-
-//         // Mã hóa mật khẩu trước khi lưu vào cơ sở dữ liệu (bảo mật)
-//         const hashedPassword = await bcrypt.hash(password, 10);
-
-//         // Tạo một đối tượng người dùng mới với username, email, và mật khẩu đã mã hóa
-//         const newUser = new User({
-//             username,
-//             email,
-//             password: hashedPassword
-//         });
-
-//         // Lưu người dùng vào cơ sở dữ liệu
-//         await newUser.save();
-
-//         // Trả về phản hồi thành công
-//         res.status(201).json({ message: 'User registered successfully' });
-
-//     } catch (err) {
-//         // Nếu có lỗi trong quá trình đăng ký
-//         res.status(500).json({ message: 'Error registering user', error: err });
-//     }
-// });
 
 // Đăng nhập
+// router.post('/login', async (req, res) => {
+//     const { username, password } = req.body;
+//     try {
+//         const user = await User.findOne({ username });
+//         if (!user) return res.status(400).json({ message: 'User not found' });
+
+//         const isMatch = await user.comparePassword(password);
+//         if (!isMatch) return res.status(400).json({ message: 'Invalid credentials' });
+
+//         // Tạo token JWT
+//         const token = jwt.sign({ id: user._id, username: user.username }, 'your_jwt_secret', { expiresIn: '1h' });
+//         console.log(token);
+//         res.json({ token });
+        
+//     } catch (err) {
+//         res.status(500).json({ message: 'Error logging in' });
+//     }
+// });
 router.post('/login', async (req, res) => {
     const { username, password } = req.body;
     try {
-        const user = await User.findOne({ username });
+        // Tìm người dùng bằng username hoặc email
+        const user = await User.findOne({ $or: [{ username }, { email: username }] });
+
         if (!user) return res.status(400).json({ message: 'User not found' });
 
         const isMatch = await user.comparePassword(password);
@@ -67,11 +66,33 @@ router.post('/login', async (req, res) => {
 
         // Tạo token JWT
         const token = jwt.sign({ id: user._id, username: user.username }, 'your_jwt_secret', { expiresIn: '1h' });
-        console.log(token);
+
         res.json({ token });
-        
     } catch (err) {
         res.status(500).json({ message: 'Error logging in' });
+    }
+});
+// Endpoint để lấy thông tin người dùng (bao gồm avatar)
+router.get('/get-user', async (req, res) => {
+    try {
+        const token = req.headers.authorization?.split(' ')[1]; // Lấy token từ header
+        if (!token) {
+            return res.status(403).json({ message: 'Access denied, no token provided' });
+        }
+
+        const decoded = jwt.verify(token, 'your_jwt_secret'); // Giải mã token
+        const user = await User.findById(decoded.id); // Lấy thông tin người dùng từ ID trong token
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        // Trả về thông tin người dùng bao gồm avatar
+        res.json({
+            username: user.username,
+            avatarUrl: user.avatar, // Trả về avatarUrl
+        });
+    } catch (err) {
+        res.status(500).json({ message: 'Error fetching user information' });
     }
 });
 
@@ -98,36 +119,84 @@ router.get('/protected', authenticateToken, (req, res) => {
     });
 });
 
-// Cấu hình multer để lưu trữ ảnh
-// const storage = multer.diskStorage({
-//     destination: (req, file, cb) => {
-//         cb(null, 'uploads/'); // Thư mục để lưu ảnh
-//     },
-//     filename: (req, file, cb) => {
-//         cb(null, `${Date.now()}-${file.originalname}`); // Đổi tên file để tránh trùng lặp
-//     }
-// });
-// const upload = multer({ storage });
-// // API để đổi ảnh đại diện
-// router.post('/account-management/avatar', authenticateToken, upload.single('avatar'), async (req, res) => {
-//     const currentUser = req.currentUser;
-//     const avatarPath = req.file.path; // Đường dẫn tới file đã upload
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'uploads/'); // Đặt thư mục lưu trữ
+    },
+    filename: (req, file, cb) => {
+        // Tạo tên file duy nhất bằng cách kết hợp timestamp và tên gốc
+        cb(null, Date.now() + path.extname(file.originalname));
+    },
+});
 
-//     try {
-//         // Cập nhật ảnh đại diện trong cơ sở dữ liệu
-//         const user = await User.findById(currentUser.id);
-//         if (!user) {
-//             return res.status(404).json({ message: 'User not found' });
-//         }
+const upload = multer({ storage });
 
-//         user.avatar = avatarPath; // Giả sử bạn đã có trường 'avatar' trong model User
-//         await user.save();
+// Middleware để kiểm tra token (có thể thêm vào nếu cần xác thực)
+const verifyToken = (req, res, next) => {
+    const token = req.headers.authorization?.split(' ')[1]; // Lấy token từ header Authorization
+    if (!token) {
+        return res.status(403).json({ message: 'No token provided' });
+    }
+    
+    // Giải mã và xác thực token
+    jwt.verify(token, 'your_jwt_secret', (err, decoded) => {
+        if (err) {
+            return res.status(401).json({ message: 'Invalid or expired token' });
+        }
 
-//         res.status(200).json({ message: 'Avatar updated successfully', avatar: avatarPath });
-//     } catch (error) {
-//         console.error(error);
-//         res.status(500).json({ message: 'Error updating avatar', error });
-//     }
-// });
+        // Lưu thông tin người dùng vào req.user
+        req.user = decoded;
+        console.log("Decoded token:", decoded); // Để kiểm tra thông tin sau khi giải mã
+
+        next(); // Tiếp tục đến middleware hoặc route handler tiếp theo
+    });
+
+};
+
+// API để upload avatar
+router.post('/upload-avatar', verifyToken, upload.single('avatar'), async (req, res) => {
+    console.log('File uploaded:', req.file);  
+    if (!req.file) {
+        return res.status(400).json({ message: 'No file uploaded' });
+    }
+    const dirname = "http://localhost:8000/api/users/uploads"
+    const avatarUrl = `${dirname}/${req.file.filename}`;// URL của ảnh vừa upload
+    
+    try {
+        // Lưu avatar URL vào MongoDB cho người dùng
+        const updatedUser = await User.findByIdAndUpdate(
+            req.user.id,  // Dùng userId từ token
+            { avatar: avatarUrl },  // Cập nhật avatar URL
+            { new: true }  // Trả về đối tượng người dùng đã được cập nhật
+        );
+
+        console.log('User ID:', req.user.id);  
+
+        // Kiểm tra nếu không tìm thấy người dùng
+        if (!updatedUser) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        res.status(200).json({
+            message: 'Avatar uploaded and saved successfully',
+            avatarUrl,
+            user: updatedUser // Trả về thông tin người dùng đã cập nhật
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Server error' });
+    }
+});
+
+const dirname = "D:/luan_van/form/src/backend/"
+// API để truy cập ảnh (có thể không cần API này nếu chỉ phục vụ tĩnh)
+router.get('/uploads/:filename', (req, res) => {
+    
+    const filePath = path.join(dirname, 'uploads/', req.params.filename);
+    res.sendFile(filePath);
+});
+// Cấu hình để Express phục vụ các file tĩnh (thư mục uploads)
+router.use('/uploads', express.static(path.join(dirname, 'uploads')));
+
 
 module.exports = router;

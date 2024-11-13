@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, IconButton, Avatar } from '@mui/material';
+import { Button, IconButton, Avatar, FormControl, Select, InputLabel, MenuItem, TextField } from '@mui/material';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useStateValue } from './StateProvider';
 import Logout from './user/Logout';
@@ -18,6 +18,9 @@ function Formheader() {
     const navigate = useNavigate();
     const { id } = useParams();
     const [{ doc_name }, dispatch] = useStateValue();
+    const [accessLevel, setAccessLevel] = useState('anyone');
+    // Trạng thái lưu danh sách người mời
+    const [invitees, setInvitees] = useState("");
     function navigates() {
         navigate(`/response/${id}`);
     }
@@ -27,7 +30,7 @@ function Formheader() {
     const toggleLogout = () => {
         setShowLogout(!showLogout);
     };
-    
+
     const [open, setOpen] = useState(false);
 
     const handleClickOpen = () => {
@@ -37,11 +40,20 @@ function Formheader() {
     const handleClose = () => {
         setOpen(false);
     };
-    const handleClick = () => {
-        // Xóa 'documentId' khỏi localStorage
-        localStorage.removeItem('documentId');
+    const handleSendLink = () => {
+        const link = `/fill-form/${id}`;
+        const accessInfo = `Access level: ${accessLevel}`;
+        console.log(`Link: ${link}, Access: ${accessInfo}, Invitees: ${invitees}`);
 
-        // Điều hướng về trang chủ ("/")
+        // Ở đây bạn có thể gửi thông tin lên server để mời người dùng
+        // Ví dụ:
+        // axios.post('/api/invite', { invitees, formLink: link, accessLevel });
+
+        // Đóng Dialog sau khi gửi
+        setOpen(false);
+    };
+    const handleClick = () => {
+        localStorage.removeItem('documentId');
         navigate('/');
     };
     return (
@@ -65,7 +77,7 @@ function Formheader() {
                 <IconButton>
                     <SettingsIcon className='form_header_icon' />
                 </IconButton>
-                
+
                 <IconButton onClick={handleClickOpen}>
                     <Button variant='contained' color='primary'>Send</Button>
                 </IconButton>
@@ -73,11 +85,41 @@ function Formheader() {
                 <Dialog open={open} onClose={handleClose}>
                     <DialogTitle>Link to Form</DialogTitle>
                     <DialogContent>
-                        <p>Here is your link: <a href={`/fill-form/${id}`} target="_blank" rel="noopener noreferrer">{`/fill-form/${id}`}</a></p>
+                        <p>Here is your link:
+                            <a href={`/fill-form/${id}`} target="_blank" rel="noopener noreferrer">
+                                {`/fill-form/${id}`}
+                            </a>
+                        </p>
+                        <FormControl fullWidth>
+                            <InputLabel style={{ marginTop: '10px', fontSize: "18px" }}>Access Level</InputLabel>
+                            <Select
+                                value={accessLevel}
+                                onChange={(e) => setAccessLevel(e.target.value)}
+                                style={{ marginTop: "20px" }}
+                            >
+                                <MenuItem value="anyone">Anyone with the link</MenuItem>
+                                <MenuItem value="inviteOnly">Only invited people</MenuItem>
+                                <MenuItem value="restricted">Restricted</MenuItem>
+                            </Select>
+                        </FormControl>
+                        {/* Trường nhập email hoặc userID */}
+                        <TextField
+                            fullWidth
+                            label="Invitees (email or userID)"
+                            multiline
+                            rows={4}
+                            value={invitees}
+                            onChange={(e) => setInvitees(e.target.value)}
+                            placeholder="Enter email or userID, separated by commas"
+                            style={{ marginTop: '20px' }}
+                        />
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={handleClose} color='primary'>
                             Close
+                        </Button>
+                        <Button onClick={handleSendLink} color='primary'>
+                            Send
                         </Button>
                     </DialogActions>
                 </Dialog>

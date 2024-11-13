@@ -5,7 +5,7 @@ import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import StorageIcon from '@mui/icons-material/Storage';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import "./Mainbody.css"
-import doc_image from "../images/party_invitation.png"
+import doc_image from "../images/samples.jpg"
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import EditIcon from '@mui/icons-material/Edit'; 
@@ -102,11 +102,6 @@ function Mainbody(){
                                 <StorageIcon style={{color:"white",fontSize:"12px",backgroundColor:"6E2594",padding:"3px",marginRight:"3px",borderRadius:"2px"}}/>
                                 Opened {currentDateTime}
                             </div>
-                            {/* <div className='content_right'>
-                            <MoreVertIcon  
-                                style={{fontSize:"16px", color:"grey"}}
-                            />
-                            </div> */}
                     
                             <div className='content_right'>
                                 <MoreVertIcon  

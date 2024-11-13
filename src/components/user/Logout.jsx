@@ -7,6 +7,7 @@ const Logout = () => {
         console.log(confirmLogout); 
         if (confirmLogout) {
             localStorage.removeItem('token');
+            localStorage.removeItem('avatarUrl');
             alert('Logged out successfully');
             navigate('/login');
         }

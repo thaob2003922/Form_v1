@@ -38,9 +38,12 @@ function QuestionForm() {
 
     // console.log('docNameInStore ', doc_name);
     
-    const [selectedValue, setSelectedValue] = useState('');
-    const handleChange = (event) => {
-        setSelectedValue(event.target.value);
+    const [selectedValue, setSelectedValue] = useState({});
+    const handleChange = (i,event) => {
+        setSelectedValue((prevState)=>({
+            ...prevState,
+            [i]: event.target.value
+        }));
     };
     const [documentName, setDocName] = useState(doc_name);
     const [documentDescription, setDocDesc] = useState("");
@@ -110,9 +113,13 @@ function QuestionForm() {
     }
     function addQuestionType(i, type) {
         let qs = [...questions];
-        console.log(type);
-        qs[i].questionType = type;
-        setQuestions(qs);
+        if (type !== "text") {
+            qs[i].questionType = type;
+            setQuestions(qs);
+        } else {
+            qs[i].questionType = "text";
+            setQuestions(qs);
+        }
     }
     function removeOption(i, j) {
         var removeOptionQuestion = [...questions];
@@ -125,7 +132,7 @@ function QuestionForm() {
     }
     function addOption(i) {
         var optionsOfQuestion = [...questions];
-        if (optionsOfQuestion[i].options.length < 5) {
+        if (optionsOfQuestion[i].questionText!== "text" && optionsOfQuestion[i].options.length < 5) {
             optionsOfQuestion[i].options.push({ optionText: "Option " + (optionsOfQuestion[i].options.length + 1) })
         } else {
             console.log("Max 5 options");
@@ -245,7 +252,7 @@ function QuestionForm() {
                                                         {i + 1}. {questions[i].questionText}
                                                     </Typography>
 
-                                                    {ques.options.map((op, j) => (
+                                                    {ques.questionType !== "text" && ques.options.map((op, j) => (
                                                         <div key={j}>
                                                             <div style={{ display: "flex", }}>
                                                                 <FormControlLabel style={{ marginLeft: "5px", marginBottom: "5px" }} disabled control={<input type={ques.questionType}
@@ -274,13 +281,13 @@ function QuestionForm() {
                                                         <input className='question' type='text' placeholder='Question' value={ques.questionText}
                                                             onChange={(e) => { changeQuestion(e.target.value, i) }}></input>
                                                         <CropOriginal style={{ color: "#5f6368" }} />
-                                                        <Select className='select' style={{ color: "#5f6368", fontSize: "13px" }} value={selectedValue || ''} onChange={handleChange} >
+                                                        <Select className='select' style={{ color: "#5f6368", fontSize: "13px" }} value={selectedValue[i] || ''}  onChange={(event) => handleChange(i, event)} >
                                                             <MenuItem id='text' value="Text" onClick={() => { addQuestionType(i, "text") }}><Subject style={{ marginRight: "10px" }} /> Paragraph</MenuItem>
                                                             <MenuItem id='checkbox' value="Checkbox" onClick={() => { addQuestionType(i, "checkbox") }}><CheckBox style={{ marginRight: "10px", color: "#70757a" }} checked />Checkboxes</MenuItem>
                                                             <MenuItem id='radio' value="Radio" onClick={() => { addQuestionType(i, "radio") }}><Radio style={{ marginRight: "10px", color: "#70757a" }} checked />Muitiple Choice </MenuItem>
                                                         </Select>
                                                     </div>
-                                                    {ques.options.map((op, j) => (
+                                                    {ques.questionType!== "text" && ques.options.map((op, j) => (
                                                         <div className='add_question_body' key={j}>
                                                             {
                                                                 (ques.questionType !== "text") ?
@@ -299,7 +306,7 @@ function QuestionForm() {
                                                         </div>
                                                     ))}
 
-                                                    {ques.options.length < 5 ? (
+                                                    {ques.questionType!== "text" && ques.options.length < 5 ? (
                                                         <div className='add_question_body'>
                                                             <FormControlLabel disabled control={
                                                                 (ques.questionType !== "text") ?

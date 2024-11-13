@@ -10,7 +10,7 @@ import Divider from '@mui/material/Divider';
 import SettingsIcon from '@mui/icons-material/Settings';
 import HelpIcon from '@mui/icons-material/Help';
 import excelsheetimage from "../images/google_sheets.png";
-import docimage from "../images/google_docs.png";
+import docimage from "../images/acc-management.png";
 import slideimage from "../images/wechat_logo.png";
 import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 import "./Drawer.css"
@@ -54,12 +54,13 @@ function TemporaryDrawer() {
             <Divider />
             <List style={{ marginLeft: "8px", marginRight: "8px", marginTop: "15px" }}>
                 <ListItem className="list_item">
-                    {/* <Link to="/account-management" style={{ textDecoration: 'none', color: 'inherit' }}>
-                        <img src={slideimage} className={classes.slideImages} alt=""/>
+                    <Link to="/account-management" style={{ textDecoration: 'none', color: 'inherit', display: 'flex', alignItems: 'center' }}>
+                        <img src={docimage} className={classes.slideImages} alt=""/>
                         <div className={classes.listItem}>Account Management</div>
-                    </Link> */}
-                    <img src={docimage} className={classes.slideImages} alt="" />
-                    <div className={classes.listItem}>Account Management</div>
+                    </Link>
+
+                    {/* <img src={docimage} className={classes.slideImages} alt="" />
+                    <div className={classes.listItem}>Account Management</div> */}
                 </ListItem>
                 <ListItem className="list_item">
                     <img src={excelsheetimage} className={classes.slideImages} alt="" />
