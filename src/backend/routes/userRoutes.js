@@ -6,20 +6,7 @@ const router = express.Router();
 const multer = require('multer');
 const path = require('path');
 
-// Đăng ký người dùng
-// router.post('/signup', async (req, res) => {
-//     const { username, password } = req.body;
-//     try {
-//         const existingUser = await User.findOne({ username });
-//         if (existingUser) return res.status(400).json({ message: 'User already exists' });
 
-//         const newUser = new User({ username, password });
-//         await newUser.save();
-//         res.status(201).json({ message: 'User registered successfully' });
-//     } catch (err) {
-//         res.status(500).json({ message: 'Error registering user' });
-//     }
-// });
 router.post('/signup', async (req, res) => {
     const { username, email, password } = req.body;
     try {
@@ -34,25 +21,6 @@ router.post('/signup', async (req, res) => {
     }
 });
 
-// Đăng nhập
-// router.post('/login', async (req, res) => {
-//     const { username, password } = req.body;
-//     try {
-//         const user = await User.findOne({ username });
-//         if (!user) return res.status(400).json({ message: 'User not found' });
-
-//         const isMatch = await user.comparePassword(password);
-//         if (!isMatch) return res.status(400).json({ message: 'Invalid credentials' });
-
-//         // Tạo token JWT
-//         const token = jwt.sign({ id: user._id, username: user.username }, 'your_jwt_secret', { expiresIn: '1h' });
-//         console.log(token);
-//         res.json({ token });
-        
-//     } catch (err) {
-//         res.status(500).json({ message: 'Error logging in' });
-//     }
-// });
 router.post('/login', async (req, res) => {
     const { username, password } = req.body;
     try {
@@ -65,7 +33,16 @@ router.post('/login', async (req, res) => {
         if (!isMatch) return res.status(400).json({ message: 'Invalid credentials' });
 
         // Tạo token JWT
-        const token = jwt.sign({ id: user._id, username: user.username }, 'your_jwt_secret', { expiresIn: '1h' });
+        const token = jwt.sign(
+            { 
+                id: user._id, 
+                username: user.username, 
+                email: user.email,
+                role: user.role 
+            }, 
+            'your_jwt_secret', 
+            { expiresIn: '1h' }
+        );
 
         res.json({ token });
     } catch (err) {
@@ -108,6 +85,44 @@ const authenticateToken = (req, res, next) => {
     });
 };
 
+//Xác thực admin
+const verifyAdmin = (req, res, next) => {
+    const token = req.header('Authorization')?.replace('Bearer ', ''); // Lấy token từ header
+    if (!token) {
+        return res.status(401).json({ message: 'Access denied. No token provided.' });
+    }
+
+    try {
+        const decoded = jwt.verify(token, 'your_jwt_secret');
+        if (decoded.role !== 'admin') {
+            return res.status(403).json({ message: 'Forbidden. Admins only.' });
+        }
+        req.user = decoded; // Lưu thông tin người dùng vào request
+        next(); // Tiếp tục xử lý route
+    } catch (err) {
+        res.status(400).json({ message: 'Invalid token.' });
+    }
+};
+router.delete('/user/:id', verifyAdmin, async (req, res) => {
+    try {
+        // Xóa người dùng
+        const user = await User.findByIdAndDelete(req.params.id);
+        if (!user) return res.status(404).json({ message: 'User not found' });
+
+        res.json({ message: 'User deleted successfully' });
+    } catch (err) {
+        res.status(500).json({ message: 'Error deleting user' });
+    }
+});
+// Route để lấy tất cả người dùng (chỉ dành cho admin)
+router.get('/all', verifyAdmin, async (req, res) => {
+    try {
+        const users = await User.find();  // Lấy tất cả người dùng từ CSDL
+        res.json(users);
+    } catch (err) {
+        res.status(500).json({ message: 'Error fetching users.' });
+    }
+});
 // Route bảo vệ yêu cầu người dùng đã đăng nhập
 router.get('/protected', authenticateToken, (req, res) => {
     const token = req.headers['authorization'];

@@ -19,6 +19,10 @@ const Login = () => {
 
     const handleLogin = async (e) => {
         e.preventDefault();
+        if (!username || !password) {
+            alert('Please fill in all fields.');
+            return;
+        }
         try {
             const response = await axios.post('http://localhost:8000/api/users/login', { username, password });
             const token = response.data.token;
@@ -26,34 +30,48 @@ const Login = () => {
 
             // Giải mã token để lấy userId và username
             const decodedToken = jwtDecode(token);
-            const userId = decodedToken.userId; //undefined
-            localStorage.setItem('userId', userId);
+            const userId = decodedToken.id;
+            const userRole = decodedToken.role;
+            const userEmail = decodedToken.email;
             const userUsername = decodedToken.username;
+
+            localStorage.setItem('userId', userId);
+            localStorage.setItem('role', userRole);
+            localStorage.setItem('email', userEmail);
             localStorage.setItem('username', userUsername);
-            
+
             const userResponse = await axios.get('http://localhost:8000/api/users/get-user', {
                 headers: {
                     'Authorization': `Bearer ${token}`, // Gửi token trong header
                 },
             });
-    
+
             const avatarUrl = userResponse.data.avatarUrl; // Lấy avatar từ API
             localStorage.setItem('avatarUrl', avatarUrl);
-            console.log("avatarUrl--", avatarUrl);
+
             // Nếu có redirect path (trường hợp người dùng đang ở một trang yêu cầu đăng nhập)
-            const redirectTo = location.state?.from || "/"; // Nếu không có redirect, điều hướng về trang chủ
+            const searchParams = new URLSearchParams(location.search);
+            const redirectTo = searchParams.get('redirectTo') ?? '/';  // Giá trị của 'redirectTo'
+            // const redirectTo = location.state?.from || "/"; // Nếu không có redirect, điều hướng về trang chủ
             alert("Logged in successfully! Welcome to the WWPigeon website!");
 
-            const storedDocumentId = localStorage.getItem('documentId');
-            if (storedDocumentId) {
-                // Nếu có documentId trong localStorage, điều hướng đến trang điền form
-                navigate(`/fill-form/${storedDocumentId}`);
-            } else {
-                // Nếu không có documentId, điều hướng về redirect path hoặc trang mặc định
-                navigate(redirectTo);
-            }
+            // const storedDocumentId = localStorage.getItem('documentId');
+            // if (storedDocumentId) {
+            //     // Nếu có documentId trong localStorage, điều hướng đến trang điền form
+            //     navigate(`/fill-form/${storedDocumentId}`);
+            // } else {
+            //     // Nếu không có documentId, điều hướng về redirect path hoặc trang mặc định
+            //     navigate(redirectTo);
+            // }
+            navigate(redirectTo);
         } catch (err) {
-            setMessage('Login failed!');
+            // alert("Login failed!")
+            if (err.response && err.response.status === 401) {
+                setMessage('An error occurred during login. Please try again later.');
+            } else {
+                alert('Your account and/or password is incorrect, please try again.');
+            }
+
         }
     };
 

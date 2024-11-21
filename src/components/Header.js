@@ -50,7 +50,7 @@ function Header() {
             const response = await axios.get(`http://localhost:8000/api/documents/search?query=${searchTerm}`, {
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`, // Đảm bảo bạn gửi token
+                    'Authorization': `Bearer ${token}`, 
                 },
             });
             const data = response.data;
@@ -65,6 +65,15 @@ function Header() {
             console.error("Error fetching search results", error);
         }
     };
+
+    // const handleCeateAccessType = async () => {
+    //     try {
+    //         const response = await axios.get(`http://localhost:8000/api/access-type/create-mock-access-type`);
+    //     } catch (error) {
+    //         console.error("Error fetching search results", error);
+    //     }
+    // };
+
     const handleSelect = (documentId) => {
         navigate(`/form/${documentId}`);
     };
@@ -93,7 +102,11 @@ function Header() {
                     WWPigeon
                 </div>
             </div>
-
+            {/* <div>
+                <button onClick={handleCeateAccessType}>
+                    Create access type
+                </button>
+            </div> */}
             <div className="header_search">
                 <IconButton onClick={handleSearch}>
                     <SearchIcon />
@@ -106,7 +119,7 @@ function Header() {
                     onChange={(e) => setSearchTerm(e.target.value)}
                 />
                 <div className="dropdown">
-                    {noResults && <div>Không có kết quả phù hợp</div>}
+                    {noResults && <div>No matching results found for your search</div>}
                     {results.map((item) => (
                         <div key={item._id} onClick={() => handleSelect(item.documentId)}>
                             {item.documentName}

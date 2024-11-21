@@ -124,7 +124,6 @@ router.post('/submit/:doc_id', async (req, res) => {
 router.get('/table/document/:docId', async (req, res) => {
     try {
         const userResponses = await UserResponse.find({ documentId: req.params.docId });
-        console.log("userResponses table be", userResponses);
         
         if (!userResponses.length) {
             return res.status(404).json({ message: 'No responses found for this document' });

@@ -6,7 +6,12 @@ const userSchema = new mongoose.Schema({
     email: {type: String, required: true},
     password: { type: String, required: true },
     createOn: {type: Date, default: Date.now},
-    avatar: { type: String, default: 'http://localhost:8000/api/users/uploads/defaultAvt.jpg'}
+    avatar: { type: String, default: 'http://localhost:8000/api/users/uploads/defaultAvt.jpg'},
+    role: {
+        type: String,
+        enum: ['admin', 'user'],  
+        default: 'user'  
+      }
 });
 
 // Mã hóa mật khẩu trước khi lưu

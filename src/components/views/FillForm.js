@@ -2,19 +2,28 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Button, Typography } from '@mui/material';
 import axios from 'axios';
-import "./FillForm.css"
+import "./FillForm.css";
+
 const FillForm = () => {
-    const { documentId: urlDocumentId } = useParams();  // Lấy documentId từ URL
+    const { shareformId: urlShareFormId } = useParams();  // Lấy shareformId từ URL
+    console.log('ShareFormId ', urlShareFormId);
+
+    const redirectToSearchParams = new URLSearchParams();
+
+    redirectToSearchParams.set('redirectTo', `/fill-form/${urlShareFormId}`);
+
+    const [document, setDocument] = useState(null);
     const [questions, setQuestions] = useState([]);  // Lưu câu hỏi
     const [docName, setDocName] = useState("");
     const [docDesc, setDocDesc] = useState("");
     const [answers, setAnswers] = useState({});  // Lưu câu trả lời dưới dạng object
     const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [hasAccess, setHasAccess] = useState(true);  // Cờ kiểm tra quyền truy cập
     const token = localStorage.getItem('token');
     const navigate = useNavigate();
 
-    // Lấy documentId từ localStorage (nếu có)
-    const storedDocumentId = localStorage.getItem('documentId');
+    // Lấy shareformId từ localStorage (nếu có)
+    // const storedDocumentId = localStorage.getItem('shareformId');
 
     // Cập nhật câu trả lời khi người dùng chọn một option
     const handleAnswerChange = (questionText, answer) => {
@@ -36,30 +45,33 @@ const FillForm = () => {
             return;
         }
 
-        // Gửi câu trả lời lên server
-        axios.post(`http://localhost:8000/api/userResponse/submit/${urlDocumentId}`, {
-            documentId: urlDocumentId,
-            userId: localStorage.getItem('userId'),  // Lấy userId từ localStorage hoặc từ context, nếu có
-            answers: answers  // Gửi dữ liệu dưới dạng object
-        }, {
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            }
-        })
-            .then(response => {
-                console.log(response.data);
-                alert('Thank you for your feedback!');
-
-                // Xóa documentId khỏi localStorage
-                localStorage.removeItem('documentId');
-
-                // Điều hướng về trang chủ sau khi gửi xong
-                navigate('/');
+        if (document?.documentId) {
+            // Gửi câu trả lời lên server
+            axios.post(`http://localhost:8000/api/userResponse/submit/${document.documentId}`, {
+                doc_id: document.documentId,
+                // email: localStorage.getItem('email'),
+                userId: localStorage.getItem('userId'),  // Lấy userId từ localStorage hoặc từ context, nếu có
+                answers: answers  // Gửi dữ liệu dưới dạng object
+            }, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
             })
-            .catch(error => {
-                console.error('Error submitting answers:', error);
-            });
+                .then(response => {
+                    console.log(response.data);
+                    alert('Thank you for your feedback!');
+
+                    // Xóa shareformId khỏi localStorage
+                    localStorage.removeItem('shareformId');
+
+                    // Điều hướng về trang chủ sau khi gửi xong
+                    navigate('/');
+                })
+                .catch(error => {
+                    console.error('Error submitting answers:', error);
+                });
+        }
     };
 
     useEffect(() => {
@@ -70,41 +82,79 @@ const FillForm = () => {
 
         setIsLoggedIn(true);
 
-        // Lấy documentId từ URL nếu có, nếu không lấy từ localStorage
-        const documentId = urlDocumentId || storedDocumentId;
+        // Lấy shareformId từ URL nếu có, nếu không lấy từ localStorage
+        // const shareformId = urlShareFormId || storedDocumentId;
 
-        if (documentId) {
-            fetch(`http://localhost:8000/api/documents/get_document_by_id/${documentId}`, {
+        if (urlShareFormId) {
+            // Kiểm tra quyền truy cập người dùng đối với tài liệu này
+            axios.get(`http://localhost:8000/api/documents/check-access/${urlShareFormId}`, {
                 headers: {
-                    'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`,
                 },
             })
-                .then(response => response.json())
-                .then(data => {
-                    setQuestions(data.questions || []);
-                    setDocName(data.documentName || "");
-                    setDocDesc(data.documentDesc || "");
+                .then(response => {
+                    if (response.status === 200) {
+                        console.log("Check access granted ", response.data)
+                        const document = response.data.document;
+
+                        setHasAccess(true)
+                        setQuestions(document.questions || []);
+                        setDocName(document.documentName || "");
+                        setDocDesc(document.documentDesc || "");
+                        setDocument(document)
+
+                        // setHasAccess(true);
+                        // // Lấy câu hỏi từ server nếu có quyền truy cập
+                        // axios.get(`http://localhost:8000/api/documents/get_document_by_id/${shareformId}`, {
+                        //     headers: {
+                        //         'Authorization': `Bearer ${token}`,
+                        //     },
+                        // })
+                        // .then(response => {
+                        //     setQuestions(response.data.questions || []);
+                        //     setDocName(response.data.documentName || "");
+                        //     setDocDesc(response.data.documentDesc || "");
+                        // })
+                        // .catch(error => {
+                        //     console.error('Error fetching questions:', error);
+                        // });
+                    } else {
+                        setHasAccess(false);
+                    }
                 })
                 .catch(error => {
-                    console.error('Error fetching questions:', error);
+                    if (error.response && error.response.status === 403) {
+                        setHasAccess(false);
+                        alert("You do not have access to this document.");
+                        // navigate('/');
+                    }
                 });
         } else {
-            console.log("No documentId found");
-            // Điều hướng về trang chủ nếu không có documentId
-            navigate('/');
+            console.log("No shareformId found");
+            // Điều hướng về trang chủ nếu không có shareformId
+            // navigate('/');
         }
-    }, [urlDocumentId, storedDocumentId, token, navigate]);
+    }, [urlShareFormId, token, navigate]); // old dependency: [urlShareFormId, storedDocumentId, token, navigate]
+
 
     if (!isLoggedIn) {
         return (
             <div>
                 <h1>Please login to access the form</h1>
                 <div className='isLoggedIn'>
-                    <button onClick={() => navigate('/login')} style={{ fontSize: '15px', padding: '15px 25px', }}>
+                    <button onClick={() => navigate(`/login?${redirectToSearchParams.toString()}`)} style={{ fontSize: '15px', padding: '15px 25px', }}>
                         Login
                     </button>
                 </div>
+            </div>
+        );
+    }
+
+    if (!hasAccess) {
+        return (
+            <div>
+                <h1>You do not have access to this document</h1>
+                <button onClick={() => navigate('/')}>Back to Home</button>
             </div>
         );
     }
@@ -175,7 +225,6 @@ const FillForm = () => {
                                     ))
                                 )
                             }
-
                         </div>
                     ))
                 ) : (

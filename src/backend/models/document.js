@@ -8,8 +8,9 @@ const documentSchema= new mongoose.Schema({
     userId:{type:String,required: true},
     createOn: {type: Date, default: Date.now},
     updateOn:{type: Date, default: Date.now},
-    questions: [questionSchema]
-
+    questions: [questionSchema],
+    accessLevel: { type: String, enum: ['anyone', 'inviteOnly', 'restricted'], default: 'anyone' },
+    invitees: { type: [String], default: [] }, // Danh sách email của người được mời
 });
 
 module.exports =mongoose.model('Document', documentSchema);

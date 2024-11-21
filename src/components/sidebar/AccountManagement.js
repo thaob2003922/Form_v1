@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Dialog, DialogActions, DialogContent, DialogTitle, Button } from '@mui/material';
+import { Dialog, DialogActions, DialogContent, DialogTitle, Button, Box } from '@mui/material';
 import axios from 'axios'; // Để gọi API
 
 const AccountManagement = () => {
@@ -7,6 +7,7 @@ const AccountManagement = () => {
     const [selectedFile, setSelectedFile] = useState(null); 
     const [openDialog, setOpenDialog] = useState(false); // Dialog open state
     const token = localStorage.getItem('token');
+    
     // Mở dialog
     const handleDialogOpen = () => {
         setOpenDialog(true);
@@ -20,10 +21,10 @@ const AccountManagement = () => {
     const handleFileChange = (event) => {
         const file = event.target.files[0];
         if (file) {
-            // Lưu tạm thời vào state
             setSelectedFile(file);
         }
     };
+
     useEffect(() => {
         // Lấy avatar từ localStorage nếu có
         const storedAvatar = localStorage.getItem('avatarUrl');
@@ -31,13 +32,12 @@ const AccountManagement = () => {
             setAvatar(storedAvatar);
         }
     }, []);
+
     const handleSave = () => {
         if (selectedFile) {
             const formData = new FormData();
             formData.append('avatar', selectedFile);
-            for (let [key, value] of formData.entries()) {
-                console.log(`${key}:`, value);
-            }
+            
             axios.post('http://localhost:8000/api/users/upload-avatar', formData, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -45,7 +45,6 @@ const AccountManagement = () => {
             })
             .then((response) => {
                 const avatarUrl = response.data.avatarUrl;
-                console.log("Avatar URL:", avatarUrl);  
                 setAvatar(avatarUrl);
                 localStorage.setItem('avatarUrl', avatarUrl); 
                 handleDialogClose(); 
@@ -55,23 +54,36 @@ const AccountManagement = () => {
                 alert('Failed to upload avatar');
             });
         }
-    };    
-    
-    return (
-        <div style={{ 
-            padding: '20px',
-            justifyContent: 'center',
-            alignItems: 'center',
-            flexDirection: 'column'  
-        }}>
-            <h2>Account Management</h2>
+    };
 
-            <div>
+    return (
+        <Box
+            sx={{
+                padding: '20px',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                alignItems: 'center',
+                textAlign: 'center',
+                gap: '20px',
+            }}
+        >
+            <h2 style={{ fontWeight: 600 }}>Account Management</h2>
+
+            {/* Avatar Section */}
+            <Box>
                 <label htmlFor="avatar-upload" style={{ cursor: 'pointer' }}>
                     <img
                         src={avatar || 'defaultAvt.jpg'}
                         alt="Avatar"
-                        style={{ width: '100px', height: '100px', borderRadius: '50%' }}
+                        style={{
+                            width: '120px',
+                            height: '120px',
+                            borderRadius: '50%',
+                            border: '3px solid #f5f5f5',
+                            boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
+                            objectFit: 'cover',
+                        }}
                     />
                 </label>
                 <input
@@ -80,15 +92,25 @@ const AccountManagement = () => {
                     onChange={handleFileChange}
                     style={{ display: 'none' }}
                 />
-            </div>
+            </Box>
 
             {/* Section thay đổi avatar */}
-            <div style={{ marginTop: '20px' }}>
-                <h3>Change Avatar</h3>
-                <Button variant="contained" color="primary" onClick={handleDialogOpen}>
+            <Box sx={{ marginTop: '20px' }}>
+                <h3 style={{ fontWeight: 500 }}>Change Avatar</h3>
+                <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={handleDialogOpen}
+                    sx={{
+                        padding: '8px 20px',
+                        fontSize: '16px',
+                        textTransform: 'none',
+                        boxShadow: '0 3px 6px rgba(0,0,0,0.1)',
+                    }}
+                >
                     Upload New Avatar
                 </Button>
-            </div>
+            </Box>
 
             {/* Dialog để upload avatar */}
             <Dialog open={openDialog} onClose={handleDialogClose}>
@@ -98,18 +120,33 @@ const AccountManagement = () => {
                         type="file"
                         onChange={handleFileChange}
                         accept="image/*"
+                        style={{
+                            padding: '10px',
+                            borderRadius: '8px',
+                            border: '1px solid #ddd',
+                            width: '100%',
+                        }}
                     />
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleDialogClose} color="primary">
                         Cancel
                     </Button>
-                    <Button onClick={handleSave} color="primary" autoFocus>
+                    <Button
+                        onClick={handleSave}
+                        color="primary"
+                        autoFocus
+                        sx={{
+                            padding: '8px 20px',
+                            textTransform: 'none',
+                            fontSize: '16px',
+                        }}
+                    >
                         Save
                     </Button>
                 </DialogActions>
             </Dialog>
-        </div>
+        </Box>
     );
 };
 

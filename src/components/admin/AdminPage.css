@@ -1,0 +1,46 @@
+/* Cập nhật kiểu dáng cho bảng */
+.table-all-users {
+    margin: 20px auto;  /* Tạo khoảng cách từ các phần tử khác */
+    padding: 10px;
+    width: 90%;  /* Chiều rộng của bảng */
+    border-collapse: collapse;  /* Xóa khoảng cách giữa các đường viền */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);  /* Thêm bóng mờ cho bảng */
+  }
+  
+  /* Các cột tiêu đề */
+  .table-all-users th {
+    background-color: #f4f4f4;  /* Màu nền cho các tiêu đề */
+    padding: 12px 15px;  /* Thêm padding để tiêu đề có không gian */
+    text-align: left;  /* Căn lề trái cho các tiêu đề */
+    border: 1px solid #ddd;  /* Đặt đường viền nhẹ cho các ô tiêu đề */
+    font-weight: bold;
+  }
+  
+  /* Các ô dữ liệu trong bảng */
+  .table-all-users td {
+    padding: 10px 15px;  /* Thêm padding cho các ô dữ liệu */
+    border: 1px solid #ddd;  /* Đặt đường viền cho các ô dữ liệu */
+    text-align: left;  /* Căn lề trái cho các ô dữ liệu */
+  }
+  
+  /* Thêm hiệu ứng hover cho dòng khi di chuột */
+  .table-all-users tr:hover {
+    background-color: #f5f5f5;  /* Màu nền khi di chuột qua dòng */
+  }
+  
+  /* Thêm style cho các nút (button) */
+  .table-all-users button {
+    margin-left: 5px;  /* Thêm khoảng cách giữa các nút */
+  }
+  
+  /* Hiển thị thống kê người dùng */
+  .user-statistics {
+    text-align: left;  /* Căn phải cho thông tin thống kê */
+    margin: 10px 0;  /* Tạo khoảng cách cho thống kê */
+    font-size: 16px;
+  }
+.btn-home{
+    margin-left: 30px;
+    padding: 5px 20px;
+}
+  

@@ -15,7 +15,8 @@ import slideimage from "../images/wechat_logo.png";
 import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 import "./Drawer.css"
 import EqualizerIcon from '@mui/icons-material/Equalizer';
-// import AccountManagement from "./sidebar/AccountManagement";
+import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
+import { jwtDecode } from 'jwt-decode';
 import { Link } from 'react-router-dom';
 const useStyle = makeStyles({
     listItem: {
@@ -30,6 +31,14 @@ function TemporaryDrawer() {
     const [state, setState] = React.useState({
         left: false
     })
+    const isAdmin = () => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            const decodedToken = jwtDecode(token); 
+            return decodedToken.role === 'admin'; 
+        }
+        return false;
+    };
     const toggleDrawer = (anchor, open) => (event) => {
         setState({ ...state, [anchor]: open });
     };
@@ -96,6 +105,14 @@ function TemporaryDrawer() {
                         <div style={{ marginLeft: "20px", fontSize: "14px" }}>Statistics</div>
                     </Link>
                 </ListItem>
+                {isAdmin() && (
+                    <ListItem className="list_item">
+                        <AdminPanelSettingsIcon />
+                        <Link to="/admin" style={{ textDecoration: 'none', color: 'inherit' }}>
+                            <div style={{ marginLeft: "20px", fontSize: "14px" }}>Admin Rights</div>
+                        </Link>
+                    </ListItem>
+                )}
             </List>
         </div>
     )

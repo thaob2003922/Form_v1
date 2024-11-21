@@ -13,6 +13,7 @@ import ProtectedPage from "./components/ProtectedPage";
 import Statistics from "./components/sidebar/Statistics";
 import FillForm from "./components/views/FillForm";
 import AccountManagement from "./components/sidebar/AccountManagement";
+import AdminPage from "./components/admin/AdminPage";
 function App() {
   // const [ {doc_name}, dispatch] = useStateValue();
   
@@ -22,6 +23,7 @@ function App() {
         <Routes>
           <Route path="/login" element={<Login/>}></Route>
           <Route path="/signup" element={<Signup/>}></Route>
+          <Route path="/admin" element={<AdminPage />} />
           <Route path="/form/:id" element={<> <Formheader/> <CenteredTabs/> </>}></Route>
           <Route path="/response/:id" element={<UserForm/>}></Route>
           <Route path="/" element={
@@ -29,7 +31,7 @@ function App() {
           }> 
           </Route>
           <Route path="/statistics" element={<Statistics/>}></Route>
-          <Route path="/fill-form/:documentId" element={<FillForm/>}></Route>
+          <Route path="/fill-form/:shareformId" element={<FillForm/>}></Route>
           <Route path="/account-management" element={<AccountManagement/>}></Route>
         </Routes>
       </BrowserRouter>
