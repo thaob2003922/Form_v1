@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Button, Typography } from '@mui/material';
+import { Button, Typography, Box } from '@mui/material';
 import axios from 'axios';
 import "./FillForm.css";
 
@@ -152,10 +152,29 @@ const FillForm = () => {
 
     if (!hasAccess) {
         return (
-            <div>
-                <h1>You do not have access to this document</h1>
-                <button onClick={() => navigate('/')}>Back to Home</button>
-            </div>
+            <Box
+                sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    height: '100vh',
+                    bgcolor: '#f7f7f7',
+                    textAlign: 'center',
+                }}
+            >
+                <Typography variant="h4" color="error" sx={{ mb: 2 }}>
+                    You do not have access to this document
+                </Typography>
+                <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => navigate('/')}
+                    sx={{ fontSize: '16px', padding: '10px 20px' }}
+                >
+                    Back to Home
+                </Button>
+            </Box>
         );
     }
 

@@ -18,14 +18,14 @@
 }
 
 .text{
-  color: #3C009d;
+  color: #32b8ed;
   font-size: 48px;
   font-weight: 700;
 }
 .underline{
   width: 61px;
   height: 6px;
-  background-color: #3C009d;
+  background-color: #32b8ed;
   border-radius: 9px;
 }
 .form{
@@ -70,11 +70,11 @@
   justify-content: center;
   width: 175px;
   height: 59px;
-  background: #4c00b4;
+  background: #32b8ed;
   border-radius: 50px;
 }
 .submit_1{
-  background-color: #4c00b4;
+  background-color: #32b8ed;
   border: none;
   font-size: 25px;
   font-weight: 300;

@@ -5,6 +5,8 @@ const fs = require('fs');
 const path = require('path');
 const UserResponse = require('../models/user-response');
 const jwt = require('jsonwebtoken');
+const UserFormRelated = require('../models/userform-related');
+const Document = require('../models/document');
 
 router.post('/user_response/:doc_id', async (req, res) => {
     const docs_data = req.body;
@@ -36,9 +38,9 @@ router.post('/user_response/:doc_id', async (req, res) => {
         worksheet.addRow(e);
     });
 
-    const filePath = path.join(__dirname, `${name}.xlsx`); 
+    const filePath = path.join(__dirname, `${name}.xlsx`);
     await workbook.xlsx.writeFile(filePath);
-    
+
     res.download(filePath, (err) => {
         if (err) {
             console.error("Error downloading the file: ", err);
@@ -114,6 +116,36 @@ router.post('/submit/:doc_id', async (req, res) => {
     try {
         await userResponse.save();
         const populatedResponse = await getUserResponse(userResponse._id); // Lấy user response đã được populate
+        // res.status(201).json({ message: 'Answers saved successfully', userResponse: populatedResponse });
+
+        console.log("userid:--", userId)
+        console.log("documentId:-- ", req.params.doc_id)
+        // Tim document by documentId
+        let document = await Document.findOne({ documentId: req.params.doc_id });
+
+        if (document) {
+            // TODO CAP NHAT LAI related share form
+            const updatedShareForm = await UserFormRelated.findOneAndUpdate(
+                { userId, documentId: document._id }, // Điều kiện để tìm relatedShareForm
+                { status: 'success' }, // Cập nhật status
+                { new: true } // Trả về đối tượng mới sau khi cập nhật
+            );
+
+            console.log("updatedShareForm:--", updatedShareForm)
+        }
+        // if (updatedShareForm) {
+        //     res.status(201).json({
+        //         message: 'Answers saved successfully and share form updated to success',
+        //         userResponse: populatedResponse,
+        //         updatedShareForm,
+        //     });
+        // } else {
+        //     res.status(404).json({ message: 'Related Share Form not found' });
+        // }
+        //add
+
+
+
         res.status(201).json({ message: 'Answers saved successfully', userResponse: populatedResponse });
     } catch (error) {
         console.error('Error saving answers:', error);
@@ -124,7 +156,7 @@ router.post('/submit/:doc_id', async (req, res) => {
 router.get('/table/document/:docId', async (req, res) => {
     try {
         const userResponses = await UserResponse.find({ documentId: req.params.docId });
-        
+
         if (!userResponses.length) {
             return res.status(404).json({ message: 'No responses found for this document' });
         }

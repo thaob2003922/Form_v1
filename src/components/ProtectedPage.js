@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import Header from './Header';
 import Template from "./Template";
 import Mainbody from "./Mainbody";
+import RelatedShareForm from './RelatedShareForm';
 
 const ProtectedPage = () => {
     const [, setMessage] = useState('');
@@ -36,7 +37,7 @@ const ProtectedPage = () => {
     }, [navigate]); // Chạy hiệu ứng khi component được render
 
     
-    return <><Header /><Template /><Mainbody /></>;
+    return <><Header /><Template /><RelatedShareForm/><Mainbody /></>;
 };
 
 export default ProtectedPage;

@@ -52,7 +52,6 @@ const Login = () => {
             // Nếu có redirect path (trường hợp người dùng đang ở một trang yêu cầu đăng nhập)
             const searchParams = new URLSearchParams(location.search);
             const redirectTo = searchParams.get('redirectTo') ?? '/';  // Giá trị của 'redirectTo'
-            // const redirectTo = location.state?.from || "/"; // Nếu không có redirect, điều hướng về trang chủ
             alert("Logged in successfully! Welcome to the WWPigeon website!");
 
             // const storedDocumentId = localStorage.getItem('documentId');
@@ -64,6 +63,7 @@ const Login = () => {
             //     navigate(redirectTo);
             // }
             navigate(redirectTo);
+           
         } catch (err) {
             // alert("Login failed!")
             if (err.response && err.response.status === 401) {

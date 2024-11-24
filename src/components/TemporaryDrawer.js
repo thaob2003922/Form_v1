@@ -48,15 +48,15 @@ function TemporaryDrawer() {
             <List>
                 <ListItem>
                     <ListItemText style={{ fontSize: "48px", marginLeft: "5px" }}>
-                        <span style={{ color: "red", fontWeight: "700px", fontSize: "22px", fontFamily: "'Product Sans',Arial,sans-serif" }}>W</span>
-                        <span style={{ color: "yellow", fontWeight: "500px", fontSize: "22px", fontFamily: "'Product Sans',Arial,sans-serif" }}>W</span>
-                        <span style={{ color: "blue", fontWeight: "500px", fontSize: "22px", fontFamily: "'Product Sans',Arial,sans-serif" }}>P</span>
-                        <span style={{ color: "blue", fontWeight: "500px", fontSize: "22px", fontFamily: "'Product Sans',Arial,sans-serif" }}>i</span>
-                        <span style={{ color: "blue", fontWeight: "500px", fontSize: "22px", fontFamily: "'Product Sans',Arial,sans-serif" }}>g</span>
-                        <span style={{ color: "blue", fontWeight: "500px", fontSize: "22px", fontFamily: "'Product Sans',Arial,sans-serif" }}>e</span>
-                        <span style={{ color: "blue", fontWeight: "500px", fontSize: "22px", fontFamily: "'Product Sans',Arial,sans-serif" }}>o</span>
-                        <span style={{ color: "blue", fontWeight: "500px", fontSize: "22px", marginRight: "10px", fontFamily: "'Product Sans',Arial,sans-serif" }}>n</span>
-                        <span style={{ color: "#5f6368", fontWeight: "500px", fontSize: "22px", fontFamily: "'Product Sans',Arial,sans-serif" }}>Docs</span>
+                        <span style={{ color: "#2A95BF", fontWeight: "700px", fontSize: "22px", fontFamily: "'Product Sans',Arial,sans-serif" }}>W</span>
+                        <span style={{ color: "#2A95BF", fontWeight: "500px", fontSize: "22px", fontFamily: "'Product Sans',Arial,sans-serif" }}>W</span>
+                        <span style={{ color: "#2A95BF", fontWeight: "500px", fontSize: "22px", fontFamily: "'Product Sans',Arial,sans-serif" }}>P</span>
+                        <span style={{ color: "#2A95BF", fontWeight: "500px", fontSize: "22px", fontFamily: "'Product Sans',Arial,sans-serif" }}>i</span>
+                        <span style={{ color: "#2A95BF", fontWeight: "500px", fontSize: "22px", fontFamily: "'Product Sans',Arial,sans-serif" }}>g</span>
+                        <span style={{ color: "#2A95BF", fontWeight: "500px", fontSize: "22px", fontFamily: "'Product Sans',Arial,sans-serif" }}>e</span>
+                        <span style={{ color: "#2A95BF", fontWeight: "500px", fontSize: "22px", fontFamily: "'Product Sans',Arial,sans-serif" }}>o</span>
+                        <span style={{ color: "#2A95BF", fontWeight: "500px", fontSize: "22px", marginRight: "10px", fontFamily: "'Product Sans',Arial,sans-serif" }}>n</span>
+                        <span style={{ color: "#73C6D9", fontWeight: "500px", fontSize: "22px", fontFamily: "'Product Sans',Arial,sans-serif" }}>Docs</span>
                     </ListItemText>
                 </ListItem>
             </List>

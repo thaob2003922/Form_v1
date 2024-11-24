@@ -3,6 +3,9 @@ const Document = require('../models/document');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
 const ShareForm = require('../models/shareform');
+const User = require('../models/user');
+const UserFormRelated = require('../models/userform-related');
+const UserResponse = require('../models/user-response');
 
 const authenticateToken = async (req, res, next) => {
     const authHeader = req.headers['authorization'];
@@ -132,6 +135,7 @@ router.delete('/delete_document/:doc_id', async (req, res) => {
             return res.status(404).json({ message: 'Document not found' });
         }
         res.status(200).json({ message: 'Document deleted successfully', deletedDocument });
+        
     } catch (error) {
         handleError(res, error, 'Error deleting document');
     }
@@ -171,44 +175,63 @@ router.put('/invite', authenticateToken, async (req, res) => {
         if (!document) {
             return res.status(404).json({ message: 'Document not found' });
         }
-
-        // // Cập nhật danh sách email mời vào tài liệu
-        // document.invitees = invitees;  // Lưu danh sách email vào trường invitees
-        // document.accessLevel = accessLevel; // Cập nhật quyền truy cập
-        // document.updatedAt = Date.now();  // Cập nhật thời gian chỉnh sửa
-
-        // await document.save(); 
-
-        // // Xử lý gửi email hoặc các hành động khác nếu cần
-        // // Bạn có thể sử dụng một dịch vụ gửi email như Nodemailer tại đây nếu cần
-
-        // res.status(200).json({
-        //     message: 'Invitation sent successfully',
-        //     documentId: formId,
-        //     invitees, // Trả lại danh sách người mời
-        //     accessLevel,
-        // });
-
+        
         const updatedShareForm = await ShareForm.findOneAndUpdate(
             { documentId: formId },
             { accesstype: accessLevel, documentId: formId, invitees: invitees },
             { new: true, runValidators: true, upsert: true }
         )
 
-        // const shareForm = new ShareForm({
-        //     invitees: invitees,
-        //     accesstype: accessLevel,
-        //     documentId: formId,
-        // });
-
-        // const savedShareForm = await shareForm.save();
-
         const shareFormURL = `/fill-form/${updatedShareForm._id}`;
+
+        // -------------------------LÀM VIỆC Ở KHU VỰC NÀY-------------------------
+        // LƯU Ý là accessLevel nếu là PUBLIC thì không cần làm đoạn này. Vì khi là PUBLIC thì không cần phải kiểm tra email của người dùng có hợp lệ hay không
+        // VIỆC CẦN LÀM:
+        /**
+         * 0. Tạo một cái danh sách rỗng tên là validInvitees (danh sách này dùng để lưu CÁC USER CÓ EMAIL HỢP LỆ)
+         * 1. Lấy danh sách invitees từ updatedShareForm.invitees
+         * 2. Kiểm tra từng email trong danh sách invitees xem có tồn tại trong hệ thống không (Cái này đi hỏi ChatGPT là: Tôi có model User như này,
+         * Tôi muốn kiếm tra từng email trong đây có phải là một User hợp lệ không, nếu hợp lệ thì thêm vào danh sách validInvitees)
+         * Nếu không thì bỏ qua
+         * 3. Sau khi kiểm tra xong hết. Thì lại hỏi chatGPT tiếp là: Tôi muốn tạo ra các relatedUserForm từ danh sách validInvitees này (mỗi User sẽ có một relatedUserForm)
+         */
+
+        // Trong quá trình này cũng hỏi ChatGPT là: Tôi muốn trong quá trình làm việc này nếu có xảy ra lỗi thì phải trả về lỗi gì đó cho người dùng.
+        const validInvitees = [];
+        const inviteeList = updatedShareForm.invitees || [];
+
+        // const validInviteUsers = await User.find({email: {$in : inviteeList}})
+        // console.log('validInviteUsers ', validInviteUsers)
+
+        const bulkOperations = inviteeList.map(async (email) => {
+            const user = await User.findOne({ email });
+            if (user) {
+                return {
+                    insertOne: {
+                        document: {
+                            userId: user._id,
+                            documentId: document._id,
+                            shareFormURL: shareFormURL,
+                            status: 'pending',
+                        },
+                    },
+                };
+            }
+        });
+        
+        // Lọc bỏ các phần tử null hoặc undefined
+        const operations = (await Promise.all(bulkOperations)).filter(op => op);
+        
+        await UserFormRelated.bulkWrite(operations);
+        
+        console.log('Bulk records created successfully.');
+        // -------------------------LÀM VIỆC Ở KHU VỰC NÀY-------------------------
 
         res.status(200).json({
             message: 'Invitation sent successfully',
             shareFormURL: shareFormURL,
-            shareForm: updatedShareForm
+            shareForm: updatedShareForm,
+            validInvitees: validInvitees
         });
 
     } catch (error) {
@@ -219,45 +242,6 @@ router.put('/invite', authenticateToken, async (req, res) => {
 
 // Kiểm tra email người dùng có trong danh sách mời hay không
 router.get('/check-access/:share_form_id', authenticateToken, async (req, res) => {
-    // const currentUser = req.currentUser;
-    // const docId = req.params.share_form_id;
-    // const email = currentUser.email;
-
-    // try {
-    //     // Tìm tài liệu theo documentId
-    //     const document = await Document.findOne({ documentId: docId });
-
-    //     // Nếu không tìm thấy tài liệu, trả về lỗi
-    //     if (!document) {
-    //         console.error("Document not found:", docId);
-    //         return res.status(404).send('Document not found');
-    //     }
-
-    //     // 1. Kiểm tra nếu người dùng là người tạo tài liệu (creator)
-    //     if (document.userId.toString() === currentUser.id.toString()) {
-    //         // Nếu là người tạo, cấp quyền truy cập
-    //         return res.status(200).send('Access granted');
-    //     }
-
-    //     // 2. Kiểm tra quyền truy cập là "anyone" (cho phép tất cả người dùng)
-    //     if (document.accessLevel === 'anyone') {
-    //         // Nếu quyền truy cập là "anyone", tất cả mọi người đều có quyền truy cập
-    //         return res.status(200).send('Access granted');
-    //     }
-
-    //     // 3. Kiểm tra nếu email người dùng có trong danh sách mời
-    //     if (document.invitees.includes(email)) {
-    //         // Nếu email có trong danh sách mời, cấp quyền truy cập
-    //         return res.status(200).send('Access granted');
-    //     }
-
-    //     // 4. Nếu không thỏa mãn bất kỳ điều kiện nào trên, trả về lỗi "Access denied"
-    //     return res.status(403).send('Access denied');
-    // } catch (err) {
-    //     console.error("Error finding document:", err);
-    //     return res.status(500).send('Error finding document');
-    // }
-
     //----- NEW CODE WITH AccessType and ShareForm
     const currentUser = req.currentUser;
     const shareFormId = req.params.share_form_id;
@@ -295,7 +279,6 @@ router.get('/check-access/:share_form_id', authenticateToken, async (req, res) =
         res.status(403).json({ message: 'Something went wrong when check access type', error});
     }
 });
-
 
 
 module.exports = router;

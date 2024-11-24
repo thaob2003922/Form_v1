@@ -21,8 +21,8 @@ function Formheader() {
     const token = localStorage.getItem('token');
     const [{ doc_name }, dispatch] = useStateValue();
     const [accessLevel, setAccessLevel] = useState('');
-    const [invitees, setInvitees] = useState(''); // Danh sách email mời người dùng nhập
-    const [inviteeList, setInviteeList] = useState([]);  // Danh sách người mời (email)
+    const [invitees, setInvitees] = useState(''); 
+    const [inviteeList, setInviteeList] = useState([]);  
     const username = localStorage.getItem('username') || 'Guest';
     const [showLogout, setShowLogout] = useState(false);
     const [open, setOpen] = useState(false);
@@ -103,10 +103,9 @@ function Formheader() {
         const accessInfo = `Access level: ${accessLevel}`;
         console.log(`Link: ${link}, Access: ${accessInfo}, Invitees: ${invitees}`);
 
-        // Gửi dữ liệu lên server
         axios.put('http://localhost:8000/api/documents/invite', {
             formId: id,
-            invitees: invitees.split(',').map(email => email.trim()),  // Tách và làm sạch danh sách email
+            invitees: invitees.split(',').map(email => email.trim()),  
             accessLevel: accessLevel,
         }, {
             headers: { 'Authorization': `Bearer ${token}` },
@@ -122,7 +121,6 @@ function Formheader() {
             }).catch(error => {
                 console.error("Error sending emails:", error);
             });
-
         setOpen(false);
     };
 
@@ -160,11 +158,6 @@ function Formheader() {
                 <Dialog open={open} onClose={handleClose}>
                     <DialogTitle>Link to Form</DialogTitle>
                     <DialogContent>
-                        {/* <p>Here is your link:
-                            <a href={`/fill-form/${id}`} target="_blank" rel="noopener noreferrer">
-                                {`/fill-form/${id}`}
-                            </a>
-                        </p> */}
                         <FormControl fullWidth>
                             <InputLabel style={{ marginTop: '10px', fontSize: "18px" }}>Access Type</InputLabel>
                             <Select
@@ -188,7 +181,6 @@ function Formheader() {
                             placeholder="Enter email, separated by commas"
                             style={{ marginTop: '20px' }}
                         />
-                        {/* Hiển thị danh sách người mời dưới trường nhập liệu */}
                         {invitees && (
                             <div style={{ marginTop: '20px' }}>
                                 <h4>Invitees preview:</h4>

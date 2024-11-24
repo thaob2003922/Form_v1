@@ -40,6 +40,8 @@ app.use('/api/userResponse', userResponseRoutes);
 const accessTypeRoutes = require('./routes/accessTypeRoutes.js');
 app.use('/api/access-type', accessTypeRoutes);
 
+const userformRelatedRoutes = require('./routes/userformRelatedRoutes.js');
+app.use('/api/user-form', userformRelatedRoutes);
 app.listen(8000,()=>{
     console.log("port connected");
 })

@@ -52,13 +52,13 @@ router.post('/login', async (req, res) => {
 // Endpoint để lấy thông tin người dùng (bao gồm avatar)
 router.get('/get-user', async (req, res) => {
     try {
-        const token = req.headers.authorization?.split(' ')[1]; // Lấy token từ header
+        const token = req.headers.authorization?.split(' ')[1]; 
         if (!token) {
             return res.status(403).json({ message: 'Access denied, no token provided' });
         }
 
-        const decoded = jwt.verify(token, 'your_jwt_secret'); // Giải mã token
-        const user = await User.findById(decoded.id); // Lấy thông tin người dùng từ ID trong token
+        const decoded = jwt.verify(token, 'your_jwt_secret'); 
+        const user = await User.findById(decoded.id); 
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
         }
@@ -170,7 +170,6 @@ const verifyToken = (req, res, next) => {
 
 // API để upload avatar
 router.post('/upload-avatar', verifyToken, upload.single('avatar'), async (req, res) => {
-    console.log('File uploaded:', req.file);  
     if (!req.file) {
         return res.status(400).json({ message: 'No file uploaded' });
     }
@@ -185,9 +184,6 @@ router.post('/upload-avatar', verifyToken, upload.single('avatar'), async (req, 
             { new: true }  // Trả về đối tượng người dùng đã được cập nhật
         );
 
-        console.log('User ID:', req.user.id);  
-
-        // Kiểm tra nếu không tìm thấy người dùng
         if (!updatedUser) {
             return res.status(404).json({ message: 'User not found' });
         }
@@ -195,7 +191,7 @@ router.post('/upload-avatar', verifyToken, upload.single('avatar'), async (req, 
         res.status(200).json({
             message: 'Avatar uploaded and saved successfully',
             avatarUrl,
-            user: updatedUser // Trả về thông tin người dùng đã cập nhật
+            user: updatedUser 
         });
     } catch (err) {
         console.error(err);

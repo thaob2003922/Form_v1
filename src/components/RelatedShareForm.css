@@ -1,0 +1,26 @@
+.userform-ctn {
+    background-color: white;
+    margin-left: 160px;
+    margin-right: 160px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* Chia 3 cột cho màn hình desktop */
+    gap: 20px; /* Khoảng cách giữa các phần tử */
+}
+
+.userform-ctn div {
+    display: flex;
+    align-items: center; /* Căn chỉnh checkbox và tên tài liệu ngang hàng */
+}
+
+.userform-ctn p {
+    margin-right: 15px; /* Khoảng cách giữa text và checkbox */
+}
+
+/* Media query cho màn hình di động */
+@media (max-width: 768px) {
+    .userform-ctn {
+        grid-template-columns: 1fr; /* Chia 1 cột cho màn hình di động */
+        margin-left: 20px; /* Giảm khoảng cách bên trái */
+        margin-right: 20px; /* Giảm khoảng cách bên phải */
+    }
+}
