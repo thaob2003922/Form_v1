@@ -6,19 +6,35 @@ table {
 }
 
 th, td {
-    border: 1px solid #ddd; /* Đường viền cho ô */
-    padding: 8px; /* Khoảng cách bên trong ô */
+    border: 1px solid #ddd; 
+    padding: 6px; /* Khoảng cách bên trong ô */
     text-align: left; /* Căn lề trái */
+    white-space: nowrap; /* Ngăn nội dung xuống dòng */
+    overflow: hidden;    /* Ẩn nội dung vượt quá */
+    text-overflow: ellipsis; /* Thêm dấu "..." khi vượt quá */
+    max-width: 100px;    /* Giới hạn chiều rộng */
+}
+td:hover, th:hover {
+    overflow: visible; /* Hiển thị toàn bộ nội dung khi hover */
+    white-space: normal; /* Cho phép xuống dòng khi hover */
+    background-color: #ffffff; /* Nền trắng để dễ nhìn */
+    z-index: 10; /* Hiển thị phía trên các thành phần khác */
+    position: relative; /* Đảm bảo nội dung nổi trên các ô khác */
+    width: auto;
+    min-width: 200px; /* Đảm bảo chiều rộng không nhỏ hơn chiều rộng mặc định */
+    word-wrap: break-word; /* Ngắt dòng khi cần */
 }
 
 th {
     background-color: #f2f2f2; /* Màu nền cho hàng tiêu đề */
     font-weight: bold; /* Đậm chữ hàng tiêu đề */
-
+    cursor: col-resize; /* Con trỏ thay đổi khi hover */
+    resize: horizontal; /* Cho phép thay đổi kích thước */
+    overflow: hidden; /* Ẩn nội dung vượt quá */
 }
 
 tr:hover {
-    background-color: #d1cccc; /* Màu nền khi di chuột qua hàng */
+    background-color: #d1cccc; 
 }
 /*Export to Excel*/
 .export-button {
@@ -47,3 +63,25 @@ tr:hover {
     font-weight: bold; /* Chữ đậm */
 }
 
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5); /* Nền mờ */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    max-width: 500px;
+    max-height: 80%;
+    overflow-y: auto; /* Cuộn nội dung nếu quá dài */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}

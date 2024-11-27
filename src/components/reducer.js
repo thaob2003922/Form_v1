@@ -1,7 +1,7 @@
 export const initialState = {
     questions: [{questionText: "Question", questionType: "radio", options:[{optionText:"Option 1"}],open: true, required:false}],
     questionType:"radio",
-    doc_name:"Untitled form",
+    doc_name:"Mẫu không có tiêu đề",
     doc_desc:" add the description"
 }
 

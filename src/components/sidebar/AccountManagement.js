@@ -68,7 +68,7 @@ const AccountManagement = () => {
                 gap: '20px',
             }}
         >
-            <h2 style={{ fontWeight: 600 }}>Account Management</h2>
+            <h2 style={{ fontWeight: 600 }}>Quản lý tài khoản</h2>
 
             {/* Avatar Section */}
             <Box>
@@ -96,7 +96,6 @@ const AccountManagement = () => {
 
             {/* Section thay đổi avatar */}
             <Box sx={{ marginTop: '20px' }}>
-                <h3 style={{ fontWeight: 500 }}>Change Avatar</h3>
                 <Button
                     variant="contained"
                     color="primary"
@@ -108,13 +107,13 @@ const AccountManagement = () => {
                         boxShadow: '0 3px 6px rgba(0,0,0,0.1)',
                     }}
                 >
-                    Upload New Avatar
+                    Cập nhật ảnh mới
                 </Button>
             </Box>
 
             {/* Dialog để upload avatar */}
             <Dialog open={openDialog} onClose={handleDialogClose}>
-                <DialogTitle>Upload New Avatar</DialogTitle>
+                <DialogTitle>Cập nhật ảnh mới</DialogTitle>
                 <DialogContent>
                     <input
                         type="file"
@@ -130,7 +129,7 @@ const AccountManagement = () => {
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleDialogClose} color="primary">
-                        Cancel
+                        Hủy
                     </Button>
                     <Button
                         onClick={handleSave}
@@ -142,7 +141,7 @@ const AccountManagement = () => {
                             fontSize: '16px',
                         }}
                     >
-                        Save
+                        Lưu
                     </Button>
                 </DialogActions>
             </Dialog>

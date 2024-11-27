@@ -84,7 +84,7 @@ const getUserResponse = async (userResponseId) => {
         return await UserResponse.findById(userResponseId);
     } catch (error) {
         console.error("Error fetching user response:", error);
-        throw error; // Ném lại lỗi để xử lý bên ngoài
+        throw error; 
     }
 };
 
@@ -133,18 +133,6 @@ router.post('/submit/:doc_id', async (req, res) => {
 
             console.log("updatedShareForm:--", updatedShareForm)
         }
-        // if (updatedShareForm) {
-        //     res.status(201).json({
-        //         message: 'Answers saved successfully and share form updated to success',
-        //         userResponse: populatedResponse,
-        //         updatedShareForm,
-        //     });
-        // } else {
-        //     res.status(404).json({ message: 'Related Share Form not found' });
-        // }
-        //add
-
-
 
         res.status(201).json({ message: 'Answers saved successfully', userResponse: populatedResponse });
     } catch (error) {
@@ -180,8 +168,8 @@ router.get('/export/document/:docId', async (req, res) => {
                 _id: item._id,
                 userId: item.userId,
                 submittedOn: item.submittedOn,
-                question, // Lưu câu hỏi
-                answer,   // Lưu câu trả lời
+                question, 
+                answer,   
             }));
         });
 

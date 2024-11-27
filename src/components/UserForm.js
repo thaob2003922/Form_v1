@@ -78,11 +78,11 @@ function UserForm() {
         })
         .then(response => {
             console.log(response.data);
-            alert('Thank you for your feedback!');
+            alert('Cảm ơn bạn đã phản hồi!');
             navigate(`/`);
         })
         .catch(error => {
-            console.error("Error submitting answers: ", error);
+            console.error("Lỗi gửi câu trả lời: ", error);
         });
     }
 

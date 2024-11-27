@@ -1,7 +1,12 @@
 .user_form{
-    background-color: #F4F4F9;
+    /* background-color: #F4F4F9; */
+    background-color: #b6e0f4;
     height: 100%;
-    padding: 20px;
+    /* padding: 20px; */
+    padding-top: 30px;
+    min-height: 100vh;
+    margin: 0;
+    box-sizing: border-box;
 }
 .submit{
     background-color: #F4F4F9;
@@ -21,10 +26,10 @@
     margin-bottom: 8px;
     width: 100%; /* Đặt chiều rộng đầy đủ */
     max-width: 600px; /* Giới hạn chiều rộng tối đa */
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* Thêm hiệu ứng đổ bóng */
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); 
 }
 .user_form_questions{
-    background-color: #F8DAE9;
+    background-color: white;
     border-radius: 8px;
     padding: 30px 25px;
     text-transform: capitalize;
@@ -32,6 +37,7 @@
     width: 100%; 
     max-width: 600px; 
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    border: 3px solid #F8DAE9;
 }
 .user_form_submit{
     float: left;

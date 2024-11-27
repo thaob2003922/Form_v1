@@ -50,8 +50,8 @@ router.post(`/add_questions/:doc_id`, authenticateToken, async (req, res) => {
                 documentId: docId,
                 userId: currentUser.id,
                 questions: docs_data.questions || [],
-                documentName: docs_data.document_name || "Untitled form",
-                documentDescription: docs_data.doc_desc || "Add description"
+                documentName: docs_data.document_name || "Mẫu không có tiêu đề",
+                documentDescription: docs_data.doc_desc || "Thêm mô tả"
             });
         } else {
             questionData.questions = docs_data.questions || questionData.questions;
@@ -78,7 +78,7 @@ router.get("/data/:doc_id", authenticateToken, async (req, res) => {
         if (!document) {
             document = new Document({
                 documentId: docId,
-                documentName: "Untitled form",
+                documentName: "Mẫu không có tiêu đề",
                 documentDescription: "",
                 questions: [
                     {
@@ -135,7 +135,7 @@ router.delete('/delete_document/:doc_id', async (req, res) => {
             return res.status(404).json({ message: 'Document not found' });
         }
         res.status(200).json({ message: 'Document deleted successfully', deletedDocument });
-        
+
     } catch (error) {
         handleError(res, error, 'Error deleting document');
     }
@@ -163,7 +163,7 @@ router.get('/search', authenticateToken, async (req, res) => {
 // Route xử lý yêu cầu mời người dùng
 router.put('/invite', authenticateToken, async (req, res) => {
     const { formId, invitees, accessLevel } = req.body;
-    const currentUser = req.currentUser;  // Lấy thông tin người dùng từ token
+    const currentUser = req.currentUser;
 
     if (!formId || !invitees || !accessLevel) {
         return res.status(400).json({ message: 'Missing required fields' });
@@ -175,7 +175,26 @@ router.put('/invite', authenticateToken, async (req, res) => {
         if (!document) {
             return res.status(404).json({ message: 'Document not found' });
         }
-        
+
+        const validInvitees = [];
+        // TODO: lọc ra ds user hợp lệ từ ds invitees (nếu email không hợp lệ thì thêm vô dòng trên)
+        // kiểm tra invalidInvitedEmails có rỗng không, rỗng thì đi tiếp, có giá trị trả về lỗi
+        // Lấy danh sách email từ invitees
+        const validInvitedUsers = await User.find({ email: { $in: invitees } });
+        console.log('type of invitess ' + typeof invitees);
+        console.log('Danh sách invited users hợp lệ:', validInvitedUsers);
+
+        const invalidInvitedEmails = invitees.map((email) => {
+            if (!validInvitedUsers.some(user => user.email === email)){
+                return email;
+            }
+        }).filter((result) => result)
+        console.log(invalidInvitedEmails);
+
+        if (invalidInvitedEmails.length > 0 ) {
+            return res.status(404).json({ message: 'Include some invalid emails' , invalidInvitedEmails });
+        }
+
         const updatedShareForm = await ShareForm.findOneAndUpdate(
             { documentId: formId },
             { accesstype: accessLevel, documentId: formId, invitees: invitees },
@@ -197,7 +216,7 @@ router.put('/invite', authenticateToken, async (req, res) => {
          */
 
         // Trong quá trình này cũng hỏi ChatGPT là: Tôi muốn trong quá trình làm việc này nếu có xảy ra lỗi thì phải trả về lỗi gì đó cho người dùng.
-        const validInvitees = [];
+        
         const inviteeList = updatedShareForm.invitees || [];
 
         // const validInviteUsers = await User.find({email: {$in : inviteeList}})
@@ -218,12 +237,12 @@ router.put('/invite', authenticateToken, async (req, res) => {
                 };
             }
         });
-        
+
         // Lọc bỏ các phần tử null hoặc undefined
         const operations = (await Promise.all(bulkOperations)).filter(op => op);
-        
+
         await UserFormRelated.bulkWrite(operations);
-        
+
         console.log('Bulk records created successfully.');
         // -------------------------LÀM VIỆC Ở KHU VỰC NÀY-------------------------
 
@@ -260,23 +279,23 @@ router.get('/check-access/:share_form_id', authenticateToken, async (req, res) =
             documentId: existingShareForm.documentId
         })
 
-        if(!existingDocument){
-            res.status(404).json({ message: 'Document not found'});
+        if (!existingDocument) {
+            res.status(404).json({ message: 'Document not found' });
         }
 
-        const hasAcessRole = existingShareForm.invitees.includes(email) 
-        || existingDocument.userId === currentUser.id.toString()
-        || existingShareForm.accesstype.name === "PUBLIC";
+        const hasAcessRole = existingShareForm.invitees.includes(email)
+            || existingDocument.userId === currentUser.id.toString()
+            || existingShareForm.accesstype.name === "PUBLIC";
 
         if (hasAcessRole) {
-            res.status(200).json({ message: 'Accessed', document: existingDocument});
-        }else{
-            res.status(403).json({ message: 'Access denied'});
+            res.status(200).json({ message: 'Accessed', document: existingDocument });
+        } else {
+            res.status(403).json({ message: 'Access denied' });
         }
 
     } catch (error) {
         console.error("Error finding document:", error);
-        res.status(403).json({ message: 'Something went wrong when check access type', error});
+        res.status(403).json({ message: 'Something went wrong when check access type', error });
     }
 });
 

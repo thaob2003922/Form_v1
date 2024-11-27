@@ -87,26 +87,26 @@ const AdminPage = () => {
                 {isAdmin ? (
                     <div>
 
-                        <h1>Welcome Admin</h1>
+                        <h1>Chào Admin!</h1>
 
                         {/* Hiển thị thông tin số lượng người dùng */}
                         <div className="user-statistics">
-                            <h3>Total Users: {userCount}</h3>
+                            <h3>Tổng người dùng: {userCount}</h3>
                         </div>
 
                         {loading ? (
                             <p>Loading users...</p>
                         ) : (
                             <div className='table-all-users'>
-                                <h2>All Users</h2>
+                                <h2>Bảng danh sách tất cả người dùng</h2>
                                 <table>
                                     <thead>
                                         <tr>
                                             <th>#</th> {/* Cột STT */}
                                             <th>Username</th>
                                             <th>Email</th>
-                                            <th>Role</th>
-                                            <th>Actions</th> {/* Cột Actions */}
+                                            <th>Vai trò</th>
+                                            <th>Hành động</th> {/* Cột Actions */}
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -135,7 +135,7 @@ const AdminPage = () => {
                         )}
                     </div>
                 ) : (
-                    <div>Access Denied</div>
+                    <div>Từ chối truy cập</div>
                 )}
 
                 {/* Hộp thoại cảnh báo xóa tài khoản */}
@@ -147,18 +147,18 @@ const AdminPage = () => {
                 >
                     <DialogTitle id="alert-dialog-title">{"Delete User?"}</DialogTitle>
                     <DialogContent>
-                        <p>Are you sure you want to delete the account of "{userToDelete?.username}"?</p>
+                        <p>Bạn có chắc chắn muốn xóa tài khoản của "{userToDelete?.username}"?</p>
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={closeDeleteDialog} color="primary">
-                            Cancel
+                            Hủy
                         </Button>
                         <Button
                             onClick={() => handleDelete(userToDelete._id, localStorage.getItem('token'))}
                             color="secondary"
                             autoFocus
                         >
-                            Delete
+                            Xóa
                         </Button>
                     </DialogActions>
                 </Dialog>
@@ -169,7 +169,7 @@ const AdminPage = () => {
                         onClick={goToHomePage}
                         style={{ marginBottom: '20px' }}
                     >
-                        Go to Home
+                        Về trang chủ
                     </Button>
                 </div>
             </div>

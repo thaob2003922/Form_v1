@@ -114,12 +114,13 @@ function Header() {
                 <input
                     type="text"
                     name="search"
-                    placeholder="Search"
+                    placeholder="Tìm kiếm"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                 />
                 <div className="dropdown">
-                    {noResults && <div>No matching results found for your search</div>}
+                    {noResults && <div>Không tìm thấy kết quả phù hợp</div>}
+                    {/* {noResults && <div>No matching results found for your search</div>} */}
                     {results.map((item) => (
                         <div key={item._id} onClick={() => handleSelect(item.documentId)}>
                             {item.documentName}

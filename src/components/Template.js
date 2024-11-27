@@ -16,7 +16,7 @@ function Template(){
     const createForm = () => {
         const create_form_id = uuidv4();
         console.log(create_form_id);
-        var question_list=[{questionText:"Question",questionType:"radio",options:[{optionText:"Option 1"}],
+        var question_list=[{questionText:"Câu hỏi",questionType:"radio",options:[{optionText:"Tùy chọn 1"}],
             open: true, required: false}]
         axios.post(`http://localhost:8000/api/documents/add_questions/${create_form_id}`,{
             'document_name':'',
@@ -35,11 +35,11 @@ function Template(){
         <div className='template_section'>
             <div className='template_top'>
                 <div className='template_left'>
-                    <span style={{fontSize:"16px", color:"#202124"}}>Start new survey</span>
+                    <span style={{fontSize:"16px", color:"#202124"}}>Bắt đầu khảo sát mới</span>
                 </div>
                 <div className='template_right'>
                     <div className='gallery_button'>
-                        Template gallery
+                        Thư viện mẫu
                         <UnfoldMoreIcon fontSize='small'/>
                     </div>
                     <IconButton>
@@ -50,16 +50,16 @@ function Template(){
             <div className='template_body'>
                 <div className='card' onClick={createForm}>
                     <img className="card_image" src={blank} alt=''/>
-                    <p className='card_title'>Blank</p>
+                    <p className='card_title'>Biểu mẫu trống</p>
                 </div>
                 <div className='card'>
                     <img className="card_image" src={party} alt=''/>
-                    <p className='card_title'>Party</p>
+                    <p className='card_title'>Lời mời dự tiệc</p>
                 </div>
                 <div className='card'>
                     <img className="card_image" src={contact} alt=''/>
                     {/* <span>Contact Information</span> */}
-                    <p className='card_title'>Contact Information</p>
+                    <p className='card_title'>Thông tin liên hệ</p>
                 </div>
             </div>
         </div>

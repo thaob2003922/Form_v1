@@ -25,10 +25,10 @@ function QuestionForm() {
     const token = localStorage.getItem('token');
     const [questions, setQuestions] = useState(
         [{
-            questionText: "Question",
+            questionText: "Câu hỏi",
             questionType: "radio",
             options: [
-                { optionText: "Option 1" }
+                { optionText: "Tùy chọn 1" }
 
             ],
             open: true,
@@ -71,7 +71,7 @@ function QuestionForm() {
                     const response = await axios.get(`http://localhost:8000/api/documents/data/${id}`,{
                             headers: {
                                 'Content-Type': 'application/json',
-                                'Authorization': `Bearer ${token}`, // Đảm bảo bạn gửi token
+                                'Authorization': `Bearer ${token}`, 
                             }
                         
                     });
@@ -163,7 +163,7 @@ function QuestionForm() {
     function addMoreQuestionField() {
         expandedCloseAll();
         setQuestions([...questions, {
-            questionText: "Question", questionType: "radio", options: [{ optionText: "Option 1" }], open: true, required: false
+            questionText: "Câu hỏi", questionType: "radio", options: [{ optionText: "Tùy chọn 1" }], open: true, required: false
         }]
         );
     }
@@ -278,13 +278,13 @@ function QuestionForm() {
                                             <div className='question_boxes'>
                                                 <AccordionDetails className='add_question'>
                                                     <div className='add_question_top'>
-                                                        <input className='question' type='text' placeholder='Question' value={ques.questionText}
+                                                        <input className='question' type='text' placeholder='Câu hỏi' value={ques.questionText}
                                                             onChange={(e) => { changeQuestion(e.target.value, i) }}></input>
                                                         <CropOriginal style={{ color: "#5f6368" }} />
                                                         <Select className='select' style={{ color: "#5f6368", fontSize: "13px" }} value={selectedValue[i] || ''}  onChange={(event) => handleChange(i, event)} >
-                                                            <MenuItem id='text' value="Text" onClick={() => { addQuestionType(i, "text") }}><Subject style={{ marginRight: "10px" }} /> Paragraph</MenuItem>
-                                                            <MenuItem id='checkbox' value="Checkbox" onClick={() => { addQuestionType(i, "checkbox") }}><CheckBox style={{ marginRight: "10px", color: "#70757a" }} checked />Checkboxes</MenuItem>
-                                                            <MenuItem id='radio' value="Radio" onClick={() => { addQuestionType(i, "radio") }}><Radio style={{ marginRight: "10px", color: "#70757a" }} checked />Muitiple Choice </MenuItem>
+                                                            <MenuItem id='text' value="Text" onClick={() => { addQuestionType(i, "text") }}><Subject style={{ marginRight: "10px" }} /> Đoạn</MenuItem>
+                                                            <MenuItem id='checkbox' value="Checkbox" onClick={() => { addQuestionType(i, "checkbox") }}><CheckBox style={{ marginRight: "10px", color: "#70757a" }} checked />Hộp kiểm</MenuItem>
+                                                            <MenuItem id='radio' value="Radio" onClick={() => { addQuestionType(i, "radio") }}><Radio style={{ marginRight: "10px", color: "#70757a" }} checked />Trắc nghiệm </MenuItem>
                                                         </Select>
                                                     </div>
                                                     {ques.questionType!== "text" && ques.options.map((op, j) => (
@@ -295,7 +295,7 @@ function QuestionForm() {
                                                                     <ShortText style={{ marginRight: "10px" }}></ShortText>
                                                             }
                                                             <div>
-                                                                <input className='text_input' type='text' placeholder='option' value={ques.options[j].optionText}
+                                                                <input className='text_input' type='text' placeholder='tùy chọn' value={ques.options[j].optionText}
                                                                     onChange={(e) => { changeOptionValue(e.target.value, i, j) }}>
                                                                 </input>
                                                             </div>
@@ -315,8 +315,8 @@ function QuestionForm() {
                                                                     <ShortText style={{ marginRight: "10px" }} />
                                                             } label={
                                                                 <div>
-                                                                    <input type='text' className='text_input' style={{ fontSize: "13px", width: "60px" }} placeholder='Add other' value={value} onChange={handleChangeAddOther}></input>
-                                                                    <Button size='small' onClick={() => { addOption(i) }} style={{ textTransform: "none", color: "#4285f4", fontSize: "13px", fontWeight: "600" }}>Add option</Button>
+                                                                    <input type='text' className='text_input' style={{ fontSize: "13px", width: "60px" }} placeholder='Thêm' value={value} onChange={handleChangeAddOther}></input>
+                                                                    <Button size='small' onClick={() => { addOption(i) }} style={{ textTransform: "none", color: "#4285f4", fontSize: "13px", fontWeight: "600" }}>Thêm lựa chọn</Button>
                                                                 </div>
                                                             }
 
@@ -327,7 +327,7 @@ function QuestionForm() {
                                                     <div className='add_footer'>
                                                         <div className='add_question_bottom_left'>
                                                             <Button size='small' style={{ textTransform: "none", color: "#4285f4", fontSize: "13px", fontWeight: "600" }}>
-                                                                <OpenInNewIcon style={{ border: "1px solid #4285f4", padding: "0.5px", marginRight: "8px" }} />Answer Key
+                                                                <OpenInNewIcon style={{ border: "1px solid #4285f4", padding: "0.5px", marginRight: "8px" }} />Đáp án câu trả lời
                                                             </Button>
                                                         </div>
                                                         <div className='add_question_bottom'>
@@ -337,7 +337,7 @@ function QuestionForm() {
                                                             <IconButton aria-label='delete' onClick={() => { deleteQuestion(i) }}>
                                                                 <DeleteIcon />
                                                             </IconButton>
-                                                            <span style={{ color: "#5f6368", fontSize: "13px" }}>Required</span>
+                                                            <span style={{ color: "#5f6368", fontSize: "13px" }}>Bắt buộc</span>
                                                             <Switch name='checkedA' color='primary' onClick={() => { requiredQuestion(i) }}></Switch>
                                                             <IconButton>
                                                                 <MoreVert />
@@ -369,8 +369,8 @@ function QuestionForm() {
                 <div className='section'>
                     <div className='question_title_section'>
                         <div className='ques_form_top'>
-                            <input className='ques_form_top_name' type='text' style={{ color: "black" }} placeholder='Untitled document' value={documentName} onChange={(e) => { setDocName(e.target.value) }}></input>
-                            <input className='ques_form_top_desc' type='text' placeholder='Add description' value={documentDescription} onChange={(e) => { setDocDesc(e.target.value) }}></input>
+                            <input className='ques_form_top_name' type='text' style={{ color: "black" }} placeholder='Tiêu đề khảo sát' value={documentName} onChange={(e) => { setDocName(e.target.value) }}></input>
+                            <input className='ques_form_top_desc' type='text' placeholder='Mô tả' value={documentDescription} onChange={(e) => { setDocDesc(e.target.value) }}></input>
                         </div>
                     </div>
                     <DragDropContext onDragEnd={onDragEnd}>
@@ -387,7 +387,7 @@ function QuestionForm() {
                         </Droppable>
                     </DragDropContext>
                     <div className='save_form'>
-                        <Button variant='contained' color='primary' onClick={commitToDB} style={{ fontSize: "14px" }}>Save</Button>
+                        <Button variant='contained' color='primary' onClick={commitToDB} style={{ fontSize: "14px" }}>Lưu</Button>
                     </div>
                 </div>
             </div>

@@ -29,7 +29,19 @@ router.get("/user-forms-related", authenticateToken, async (req, res) => {
     const currentUser = req.currentUser;
     try {
         const relatedShareForm = await UserFormRelated.find({userId: currentUser.id}).populate('documentId');
-        res.send({ relatedShareForm });
+        // res.send({ relatedShareForm });
+
+        //add 27.11
+        const uniqueForms = [];
+        const seenDocumentIds = new Set();
+        relatedShareForm.forEach((form) => {
+            if (form.documentId && !seenDocumentIds.has(form.documentId._id.toString())) {
+                uniqueForms.push(form);
+                seenDocumentIds.add(form.documentId._id.toString()); // Thêm documentId vào Set
+            }
+        });
+        // Gửi danh sách đã lọc về client
+        res.send({ relatedShareForm: uniqueForms });
     } catch (error) {
         handleError(res, error, 'Error fetching documents');
     }

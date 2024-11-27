@@ -34,8 +34,8 @@ function TemporaryDrawer() {
     const isAdmin = () => {
         const token = localStorage.getItem('token');
         if (token) {
-            const decodedToken = jwtDecode(token); 
-            return decodedToken.role === 'admin'; 
+            const decodedToken = jwtDecode(token);
+            return decodedToken.role === 'admin';
         }
         return false;
     };
@@ -56,7 +56,7 @@ function TemporaryDrawer() {
                         <span style={{ color: "#2A95BF", fontWeight: "500px", fontSize: "22px", fontFamily: "'Product Sans',Arial,sans-serif" }}>e</span>
                         <span style={{ color: "#2A95BF", fontWeight: "500px", fontSize: "22px", fontFamily: "'Product Sans',Arial,sans-serif" }}>o</span>
                         <span style={{ color: "#2A95BF", fontWeight: "500px", fontSize: "22px", marginRight: "10px", fontFamily: "'Product Sans',Arial,sans-serif" }}>n</span>
-                        <span style={{ color: "#73C6D9", fontWeight: "500px", fontSize: "22px", fontFamily: "'Product Sans',Arial,sans-serif" }}>Docs</span>
+                        <span style={{ color: "#73C6D9", fontWeight: "500px", fontSize: "22px", fontFamily: "'Product Sans',Arial,sans-serif" }}>Khảo sát</span>
                     </ListItemText>
                 </ListItem>
             </List>
@@ -64,20 +64,29 @@ function TemporaryDrawer() {
             <List style={{ marginLeft: "8px", marginRight: "8px", marginTop: "15px" }}>
                 <ListItem className="list_item">
                     <Link to="/account-management" style={{ textDecoration: 'none', color: 'inherit', display: 'flex', alignItems: 'center' }}>
-                        <img src={docimage} className={classes.slideImages} alt=""/>
-                        <div className={classes.listItem}>Account Management</div>
+                        <img src={docimage} className={classes.slideImages} alt="" />
+                        <div className={classes.listItem}>Thông tin tài khoản</div>
                     </Link>
-
-                    {/* <img src={docimage} className={classes.slideImages} alt="" />
-                    <div className={classes.listItem}>Account Management</div> */}
                 </ListItem>
                 <ListItem className="list_item">
                     <img src={excelsheetimage} className={classes.slideImages} alt="" />
-                    <div className={classes.listItem}>Sheet</div>
+                    <div className={classes.listItem}>Trang tính</div>
                 </ListItem>
                 <ListItem className="list_item">
                     <img src={slideimage} className={classes.slideImages} alt="" />
-                    <div className={classes.listItem}>Wechat</div>
+                    {/* <div className={classes.listItem}>Liên kết Wechat</div> */}
+                    <a
+                        href="https://web.wechat.com/?url=" 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        style={{
+                            textDecoration: 'none', 
+                            cursor: 'pointer', 
+                        }}
+                        className={classes.listItem} 
+                    >
+                        Liên kết Wechat
+                    </a>
                 </ListItem>
             </List>
 
@@ -85,31 +94,31 @@ function TemporaryDrawer() {
             <List style={{ marginLeft: "8px", marginRight: "8px", marginTop: "15px" }}>
                 <ListItem className="list_item">
                     <SettingsIcon />
-                    <div style={{ marginLeft: "20px", fontSize: "14px" }}>Settings</div>
+                    <div style={{ marginLeft: "20px", fontSize: "14px" }}>Cài đặt</div>
                 </ListItem>
 
                 <ListItem className="list_item">
                     <HelpIcon />
-                    <div style={{ marginLeft: "20px", fontSize: "14px" }}>Help & Feedback</div>
+                    <div style={{ marginLeft: "20px", fontSize: "14px" }}>Trợ giúp & phản hồi</div>
                 </ListItem>
             </List>
             <Divider />
             <List style={{ marginLeft: "8px", marginRight: "8px", marginTop: "15px" }}>
                 <ListItem className="list_item">
                     <NotificationsActiveIcon />
-                    <div style={{ marginLeft: "20px", fontSize: "14px" }}>Notifications</div>
+                    <div style={{ marginLeft: "20px", fontSize: "14px" }}>Thông báo</div>
                 </ListItem>
                 <ListItem className="list_item">
                     <EqualizerIcon />
                     <Link to="/statistics" style={{ textDecoration: 'none', color: 'inherit' }}>
-                        <div style={{ marginLeft: "20px", fontSize: "14px" }}>Statistics</div>
+                        <div style={{ marginLeft: "20px", fontSize: "14px" }}>Thống kê</div>
                     </Link>
                 </ListItem>
                 {isAdmin() && (
                     <ListItem className="list_item">
                         <AdminPanelSettingsIcon />
                         <Link to="/admin" style={{ textDecoration: 'none', color: 'inherit' }}>
-                            <div style={{ marginLeft: "20px", fontSize: "14px" }}>Admin Rights</div>
+                            <div style={{ marginLeft: "20px", fontSize: "14px" }}>Quyền của Admin</div>
                         </Link>
                     </ListItem>
                 )}

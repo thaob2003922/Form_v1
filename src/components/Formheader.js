@@ -113,13 +113,16 @@ function Formheader() {
             .then(response => {
                 const data = response.data;
                 console.log("Emails sent successfully:", response.data);
-                alert("Link is copied to clipboard!" + " Link: " + `http://localhost:3000${data.shareFormURL}`);
+                alert("Liên kết được sao chép vào clipboard!" + " Link: " + `http://localhost:3000${data.shareFormURL}`);
                 if (navigator.clipboard) {
                     navigator.clipboard.writeText(`http://localhost:3000${data.shareFormURL}`);
                 }
                 setInviteeList(data.shareForm.invitees); // Cập nhật lại danh sách người mời sau khi gửi thành công
             }).catch(error => {
                 console.error("Error sending emails:", error);
+                if(error?.response?.data?.invalidInvitedEmails){
+                    alert("Email này không có trong hệ thống " + JSON.stringify(error.response.data.invalidInvitedEmails));
+                }
             });
         setOpen(false);
     };
@@ -135,10 +138,10 @@ function Formheader() {
                 <Link to='/' onClick={handleClick}>
                     <img src={formimage} style={{ height: "45px", width: "40px" }} alt='' />
                 </Link>
-                <input type='text' placeholder='Untitled form' className='form_name' value={doc_name}></input>
+                <input type='text' placeholder='Mẫu không có tiêu đề' className='form_name' value={doc_name}></input>
                 <FolderOpenIcon className='form_header_icon' />
                 <StarOutlineIcon className='form_header_icon' />
-                <span style={{ fontSize: "12px", fontWeight: "600px" }}>All changes saved</span>
+                <span style={{ fontSize: "12px", fontWeight: "600px" }}>Đã lưu...</span>
             </div>
             <div className='form_header_right'>
                 <IconButton>
@@ -152,14 +155,14 @@ function Formheader() {
                 </IconButton>
 
                 <IconButton onClick={handleClickOpen}>
-                    <Button variant='contained' color='primary'>Send</Button>
+                    <Button variant='contained' color='primary'>Gửi</Button>
                 </IconButton>
 
                 <Dialog open={open} onClose={handleClose}>
-                    <DialogTitle>Link to Form</DialogTitle>
+                    <DialogTitle>Đường dẫn đến khảo sát</DialogTitle>
                     <DialogContent>
                         <FormControl fullWidth>
-                            <InputLabel style={{ marginTop: '10px', fontSize: "18px" }}>Access Type</InputLabel>
+                            <InputLabel style={{ marginTop: '10px', fontSize: "18px" }}>Quyền truy cập</InputLabel>
                             <Select
                                 value={accessLevel}
                                 onChange={(e) => setAccessLevel(e.target.value)}
@@ -173,17 +176,17 @@ function Formheader() {
                         <TextField
                             disabled={accessTypes.find((accessType) => accessType.name === "PUBLIC")?._id === accessLevel}
                             fullWidth
-                            label="Invitees (email)"
+                            label="Người được mời (email)"
                             multiline
                             rows={4}
                             value={invitees}
                             onChange={(e) => setInvitees(e.target.value)}
-                            placeholder="Enter email, separated by commas"
+                            placeholder="Nhập email, cách nhau bằng dấu phẩy"
                             style={{ marginTop: '20px' }}
                         />
                         {invitees && (
                             <div style={{ marginTop: '20px' }}>
-                                <h4>Invitees preview:</h4>
+                                <h4>Xem trước danh sách được mời:</h4>
                                 <ul>
                                     {invitees.split(',').map((email, index) => (
                                         <li key={index}>{email.trim()}</li>
@@ -194,10 +197,10 @@ function Formheader() {
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={handleClose} color='primary'>
-                            Close
+                            Đóng
                         </Button>
                         <Button onClick={handleSendLink} color='primary'>
-                            Send
+                            Gửi
                         </Button>
                     </DialogActions>
                 </Dialog>

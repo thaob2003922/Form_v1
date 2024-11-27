@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Button, Typography, Box } from '@mui/material';
+import { Button, Typography} from '@mui/material';
 import axios from 'axios';
 import "./FillForm.css";
-
+import loginloading from '../user/img-temp/backgr.jpg'
 const FillForm = () => {
     const { shareformId: urlShareFormId } = useParams();  // Lấy shareformId từ URL
     console.log('ShareFormId ', urlShareFormId);
@@ -13,7 +13,7 @@ const FillForm = () => {
     redirectToSearchParams.set('redirectTo', `/fill-form/${urlShareFormId}`);
 
     const [document, setDocument] = useState(null);
-    const [questions, setQuestions] = useState([]);  // Lưu câu hỏi
+    const [questions, setQuestions] = useState([]);
     const [docName, setDocName] = useState("");
     const [docDesc, setDocDesc] = useState("");
     const [answers, setAnswers] = useState({});  // Lưu câu trả lời dưới dạng object
@@ -60,7 +60,7 @@ const FillForm = () => {
             })
                 .then(response => {
                     console.log(response.data);
-                    alert('Thank you for your feedback!');
+                    alert('Cảm ơn bạn đã phản hồi!');
 
                     // Xóa shareformId khỏi localStorage
                     localStorage.removeItem('shareformId');
@@ -125,7 +125,7 @@ const FillForm = () => {
                 .catch(error => {
                     if (error.response && error.response.status === 403) {
                         setHasAccess(false);
-                        alert("You do not have access to this document.");
+                        alert("Bạn không có quyền truy cập vào tài liệu này.");
                         // navigate('/');
                     }
                 });
@@ -137,44 +137,119 @@ const FillForm = () => {
     }, [urlShareFormId, token, navigate]); // old dependency: [urlShareFormId, storedDocumentId, token, navigate]
 
 
+    // if (!isLoggedIn) {
+    //     return (
+    //         <div>
+    //             <h1>Vui lòng đăng nhập để truy cập vào biểu mẫu</h1>
+    //             <div className='isLoggedIn'>
+    //                 <button onClick={() => navigate(`/login?${redirectToSearchParams.toString()}`)} style={{ fontSize: '15px', padding: '15px 25px', }}>
+    //                     Login
+    //                 </button>
+    //             </div>
+    //         </div>
+    //     );
+    // }
     if (!isLoggedIn) {
         return (
-            <div>
-                <h1>Please login to access the form</h1>
+            <div style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                height: '100vh',
+                backgroundColor: '#white',
+                fontFamily: 'Arial, sans-serif',
+            }}>
+                <h1 style={{
+                    fontSize: '24px',
+                    fontWeight: 'bold',
+                    color: '#333',
+                    textAlign: 'center',
+                    marginBottom: '20px',
+                }}>
+                    Vui lòng đăng nhập để truy cập vào biểu mẫu
+                </h1>
+                <img
+                    src={loginloading}
+                    alt="loading..."
+                    style={{
+                        width: '300px',
+                        marginBottom: '30px',
+                    }}
+                />
                 <div className='isLoggedIn'>
-                    <button onClick={() => navigate(`/login?${redirectToSearchParams.toString()}`)} style={{ fontSize: '15px', padding: '15px 25px', }}>
-                        Login
+                    <button
+                        onClick={() => navigate(`/login?${redirectToSearchParams.toString()}`)}
+                        style={{
+                            fontSize: '16px',
+                            padding: '12px 30px',
+                            backgroundColor: '#007bff',
+                            color: '#fff',
+                            border: 'none',
+                            borderRadius: '5px',
+                            cursor: 'pointer',
+                            boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+                            transition: 'background-color 0.3s ease',
+                        }}
+                        onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#0056b3'}
+                        onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#007bff'}
+                    >
+                        Đăng nhập
                     </button>
                 </div>
             </div>
         );
     }
 
+
     if (!hasAccess) {
         return (
-            <Box
-                sx={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    height: '100vh',
-                    bgcolor: '#f7f7f7',
+            <div  style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                height: '100vh',
+                backgroundColor: '#white',
+                fontFamily: 'Arial, sans-serif',
+            }}>
+                <h1 style={{
+                    fontSize: '24px',
+                    fontWeight: 'bold',
+                    color: '#333',
                     textAlign: 'center',
-                }}
-            >
-                <Typography variant="h4" color="error" sx={{ mb: 2 }}>
-                    You do not have access to this document
-                </Typography>
-                <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={() => navigate('/')}
-                    sx={{ fontSize: '16px', padding: '10px 20px' }}
-                >
-                    Back to Home
-                </Button>
-            </Box>
+                    marginBottom: '20px',
+                }}>
+                    Bạn không có quyền truy cập vào tài liệu này
+                </h1>
+                <img
+                    src={loginloading}
+                    alt="loading..."
+                    style={{
+                        width: '300px',
+                        marginBottom: '30px',
+                    }}
+                />
+                <div className='hasAccess'>
+                    <button 
+                    onClick={() => navigate(`/`)}
+                    style={{
+                            fontSize: '16px',
+                            padding: '12px 30px',
+                            backgroundColor: '#007bff',
+                            color: '#fff',
+                            border: 'none',
+                            borderRadius: '5px',
+                            cursor: 'pointer',
+                            boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+                            transition: 'background-color 0.3s ease',
+                        }}
+                        onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#0056b3'}
+                        onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#007bff'}>
+                    Quay lại trang chủ
+                    </button>
+                </div>
+            </div>
         );
     }
 
@@ -204,8 +279,8 @@ const FillForm = () => {
                             {
                                 question.questionType === 'text' ? (
                                     // Render một input duy nhất cho câu hỏi kiểu text
-                                    <div key="text-input" style={{ marginBottom: "5px" }}>
-                                        <div style={{ display: "flex" }}>
+                                    <div key="text-input" style={{ marginBottom: "5px"}}>
+                                        <div style={{width:"95%" }}>
                                             <div className="form_check">
                                                 <label>
                                                     <input

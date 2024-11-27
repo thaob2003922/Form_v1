@@ -52,21 +52,21 @@ function CenteredTabs() {
     return (
         <Paper className={classes.root}>
             <Tabs className={classes.tabs} textColor='primary' indicatorColor='primary' centered value={value} onChange={handleChange}>
-                <Tab label="Questions" className={classes.tab}{...allProps(0)}></Tab>
-                <Tab label="Responses" className={classes.tab}{...allProps(1)}></Tab>
+                <Tab label="Câu hỏi" className={classes.tab}{...allProps(0)}></Tab>
+                <Tab label="Câu trả lời" className={classes.tab}{...allProps(1)}></Tab>
             </Tabs>
 
             <TabPanel value={value} index={0}>
                 <QuestionForm />
             </TabPanel>
             <TabPanel value={value} index={1}>
-                <div className='submit' style={{ height: "76vh" }}>
+                <div className='submit'>
                     <div className="user_form">
                         <div className="user_form_section">
                             <div className="user_form_questions" style={{display:'flex', flexDirection:'column',marginBottom:"20px"} }>
                                 <div style={{display:'flex', flexDirection:'row',alignItems:"center",justifyContent:"space-between"}}>
                                 {/* <div><button onClick={handleSubmit}>Export to Excel</button></div> */}
-                                <div><h3>User feedback list</h3></div>
+                                <div><h3>Danh sách người phản hồi</h3></div>
                                 <Typography style={{
                                     fontSize: "15px", fontWeight: "400", letterSpacing: "0.1px", lineHeight: "24px",
                                     paddingBottom: "8px"
@@ -82,7 +82,7 @@ function CenteredTabs() {
                             <br></br>
                             <div style={{marginBottom:"5px"}}>
                                 <div style={{display:'flex',fontSize:"12px",justifyContent:'flex-end'}}>
-                                    Accepting responses <Switch color='primary' size='small'/>
+                                    Chấp nhận phản hồi <Switch color='primary' size='small'/>
                                 </div>
                             </div>
                         </div>

@@ -14,14 +14,14 @@ function Mainbody() {
     const navigate = useNavigate();
 
     function navigate_to(docname) {
-        handleClick(docname.documentId);
-        console.log(docname)
+        // handleClick(docname.documentId);
+        // console.log("docname mainbody:", docname);
 
         navigate("/form/" + docname.documentId)
     }
-    const handleClick = (documentId) => {
-        localStorage.setItem('documentId', documentId);
-    };
+    // const handleClick = (documentId) => {
+    //     localStorage.setItem('documentId', documentId);
+    // };
 
     const [files, setFiles] = useState([]);
     const [menuOpen, setMenuOpen] = useState(null);
@@ -61,7 +61,7 @@ function Mainbody() {
         // console.log("Chỉnh sửa tài liệu với ID:", docId);
         // // Thêm logic chỉnh sửa tại đây
     };
-    const currentDateTime = new Date().toLocaleString('en-US', {
+    const currentDateTime = new Date().toLocaleString('vi-VN', {
         year: 'numeric',
         month: 'long',
         day: 'numeric',
@@ -73,10 +73,10 @@ function Mainbody() {
         <div className='mainbody'>
             <div className='mainbody_top'>
                 <div className='mainbody_top_left' style={{ fontSize: "16px", fontWeight: "500px" }}>
-                    Rencents form
+                    Biểu mẫu gần đây
                 </div>
                 <div className='mainbody_top_right'>
-                    <div className='mainbody_top_center' style={{ fontSize: "14px", marginRight: "125px" }}>Owned by anyone<ArrowDropDownIcon /></div>
+                    <div className='mainbody_top_center' style={{ fontSize: "14px", marginRight: "125px" }}>Do tôi sở hữu<ArrowDropDownIcon /></div>
                     <IconButton>
                         <StorageIcon style={{ fontSize: "16px", color: "black" }} />
                     </IconButton>
@@ -102,7 +102,7 @@ function Mainbody() {
                             <div className='doc_content'>
                                 <div className='content_left'>
                                     <StorageIcon style={{ color: "white", fontSize: "12px", backgroundColor: "6E2594", padding: "3px", marginRight: "3px", borderRadius: "2px" }} />
-                                    Opened {currentDateTime}
+                                    Đã mở {currentDateTime}
                                 </div>
 
                                 <div className='content_right'>
@@ -119,13 +119,13 @@ function Mainbody() {
                                                 onClick={() => { handleEdit(ele.documentId); setMenuOpen(null); }}
                                                 style={{ padding: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center' }}
                                             >
-                                                <EditIcon style={{ marginRight: '4px' }} />Edit name
+                                                <EditIcon style={{ marginRight: '4px' }} />Đổi tên
                                             </div>
                                             <div
                                                 onClick={() => { handleDelete(ele.documentId); setMenuOpen(null); }}
                                                 style={{ padding: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center', color: 'red' }}
                                             >
-                                                <DeleteIcon style={{ marginRight: '4px' }} />Delete
+                                                <DeleteIcon style={{ marginRight: '4px' }} />Xóa
                                             </div>
                                         </div>
                                     )}
