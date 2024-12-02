@@ -56,7 +56,7 @@ const AdminPage = () => {
             });
             setUsers(users.filter(user => user._id !== id));  // Loại bỏ người dùng đã xóa khỏi danh sách
             setUserCount(userCount - 1);
-            alert("The user account has been successfully deleted");
+            alert("Tài khoản người dùng đã được xóa thành công");
             setOpenDialog(false);  // Đóng hộp thoại
         } catch (err) {
             console.error('Error deleting user:', err);
@@ -82,12 +82,11 @@ const AdminPage = () => {
 
     return (
         <>
-            
-            <div>
+            <div className="admin-container">
                 {isAdmin ? (
-                    <div>
+                    <div  className="admin-content">
 
-                        <h1>Chào Admin!</h1>
+                        <h1 className="admin-header">Xin chào Admin!</h1>
 
                         {/* Hiển thị thông tin số lượng người dùng */}
                         <div className="user-statistics">

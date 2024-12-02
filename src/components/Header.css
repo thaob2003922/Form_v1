@@ -17,47 +17,79 @@
 .info{
     color: #5f6368;
     font-size: 22px;
+    font-weight: 500px;
     padding-left: 5px;
     font-family: 'Google Sans', Arial, 'Times New Roman', serif;
 }
-.header_right{
+.header_right {
     display: flex;
     align-items: center;
-}
-/* .header_search{
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    background-color: #f4f4f9;
-    width: 650px;
-    height: 45px;
-    border-radius: 5px;
-    position: relative; 
+    justify-content: flex-end; /* Canh phải các phần tử */
+    gap: 10px; /* Khoảng cách giữa các phần tử */
+    position: relative;
 }
 
-.header_search > input {
-    border: none;
-    outline: none; 
-    background: transparent;
-    width: 300px;
-    height: 40px;
-} */
-.logout_menu{
-    position: absolute; 
-    top: 55px; 
-    right: 18px; 
-    background-color: white; 
-    border: 1px solid #ccc; 
-    border-radius: 8px; 
-    padding: 10px; 
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); 
-    z-index: 1000; 
-}
 .username-display {
     margin-left: 8px; /* Khoảng cách giữa avatar và tên */
-    font-size: 14px; /* Kích thước chữ */
-    color: #333; /* Màu chữ */
+    font-size: 16px; /* Kích thước chữ lớn hơn một chút */
+    font-weight: 500; /* Chữ đậm hơn để dễ nhìn */
+    color: #555; /* Màu chữ nhẹ nhàng */
+    transition: color 0.3s ease; /* Hiệu ứng chuyển đổi màu */
 }
+
+.username-display:hover {
+    color: #007bff; /* Thay đổi màu khi hover */
+    cursor: pointer; /* Hiệu ứng trỏ chuột */
+}
+
+.logout_menu {
+    position: absolute;
+    top: 50px; /* Đẩy menu xuống một chút để tránh đè lên avatar */
+    right: 14px; /* Căn chỉnh vị trí menu */
+    background-color: white;
+    border: 1px solid #ddd; /* Viền nhẹ nhàng hơn */
+    border-radius: 8px;
+    padding: 10px 10px; /* Khoảng cách trong menu */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); /* Đổ bóng nổi bật */
+    z-index: 1000;
+    width: 90px; /* Đảm bảo menu đủ rộng */
+}
+
+.logout_menu > * {
+    display: block;
+    color: #333;
+    text-decoration: none;
+    padding: 8px 10px;
+    font-size: 14px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.logout_menu > *:hover {
+    background-color: #f5f5f5;
+    color: #de0f2a; /* Màu chữ xanh nổi bật khi hover */
+    cursor: pointer;
+}
+
+.header_right > .MuiIconButton-root {
+    padding: 5px;
+    transition: transform 0.3s ease;
+}
+
+.header_right > .MuiIconButton-root:hover {
+    transform: scale(1.1); /* Hiệu ứng phóng to khi hover */
+}
+
+.header_right > .MuiAvatar-root {
+    border: 2px solid #ddd; /* Đường viền nhẹ nhàng quanh avatar */
+    transition: border-color 0.3s ease, transform 0.3s ease;
+}
+
+.header_right > .MuiAvatar-root:hover {
+    border-color: #007bff; /* Thay đổi viền khi hover */
+    transform: scale(1.05); /* Phóng to nhẹ */
+}
+
 
 .header_search {
     display: flex;
@@ -70,7 +102,7 @@
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Hiệu ứng đổ bóng */
     padding: 0 10px; /* Khoảng cách bên trong */
     position: relative;
-    border: 1px solid #ddd; 
+    border: 1px solid #ddd; /* Đường viền nhẹ */
 }
 
 .header_search > input {
@@ -116,5 +148,15 @@
     cursor: pointer;
     font-size: 14px;
     color: #333;
-    border-bottom:
+    border-bottom: 1px solid #f4f4f9;
+}
+.dropdown > div:hover {
+    background-color: #f0f0f5; 
+}
+
+.no-results {
+    padding: 10px;
+    font-size: 14px;
+    color: #999;
+    text-align: center;
 }

@@ -36,7 +36,7 @@ th {
 tr:hover {
     background-color: #d1cccc; 
 }
-/*Export to Excel*/
+
 .export-button {
     display: flex; /* Sử dụng flexbox */
     align-items: center; /* Căn giữa theo chiều dọc */

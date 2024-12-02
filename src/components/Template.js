@@ -58,7 +58,6 @@ function Template(){
                 </div>
                 <div className='card'>
                     <img className="card_image" src={contact} alt=''/>
-                    {/* <span>Contact Information</span> */}
                     <p className='card_title'>Thông tin liên hệ</p>
                 </div>
             </div>

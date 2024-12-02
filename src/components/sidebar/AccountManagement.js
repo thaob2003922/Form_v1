@@ -1,23 +1,34 @@
 import React, { useState, useEffect } from 'react';
-import { Dialog, DialogActions, DialogContent, DialogTitle, Button, Box } from '@mui/material';
-import axios from 'axios'; // Để gọi API
-
+import {
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogTitle,
+    Button,
+    Box,
+    TextField,
+    Typography,
+} from '@mui/material';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 const AccountManagement = () => {
-    const [avatar, setAvatar] = useState(null); // Avatar state (để hiển thị trong giao diện)
-    const [selectedFile, setSelectedFile] = useState(null); 
-    const [openDialog, setOpenDialog] = useState(false); // Dialog open state
+    const [avatar, setAvatar] = useState(null);
+    const [displayName, setDisplayName] = useState(''); // Tên hiển thị
+    const [email, setEmail] = useState('');
+    const [selectedFile, setSelectedFile] = useState(null);
+    const [openDialog, setOpenDialog] = useState(false); // Dialog avatar
     const token = localStorage.getItem('token');
-    
-    // Mở dialog
-    const handleDialogOpen = () => {
-        setOpenDialog(true);
-    };
+    const navigate = useNavigate();
+    useEffect(() => {
+        // Lấy dữ liệu ban đầu (avatar, tên hiển thị và email) từ API hoặc localStorage
+        const storedAvatar = localStorage.getItem('avatarUrl');
+        const storedName = localStorage.getItem('displayName');
+        const storedEmail = localStorage.getItem('email');
+        if (storedAvatar) setAvatar(storedAvatar);
+        if (storedName) setDisplayName(storedName);
+        if (storedEmail) setEmail(storedEmail);
+    }, []);
 
-    const handleDialogClose = () => {
-        setOpenDialog(false);
-    };
-    
-    // Xử lý thay đổi tệp (lưu tạm thời vào state)
     const handleFileChange = (event) => {
         const file = event.target.files[0];
         if (file) {
@@ -25,95 +36,148 @@ const AccountManagement = () => {
         }
     };
 
-    useEffect(() => {
-        // Lấy avatar từ localStorage nếu có
-        const storedAvatar = localStorage.getItem('avatarUrl');
-        if (storedAvatar) {
-            setAvatar(storedAvatar);
-        }
-    }, []);
-
-    const handleSave = () => {
+    const handleAvatarSave = () => {
         if (selectedFile) {
             const formData = new FormData();
             formData.append('avatar', selectedFile);
-            
-            axios.post('http://localhost:8000/api/users/upload-avatar', formData, {
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                },
-            })
-            .then((response) => {
-                const avatarUrl = response.data.avatarUrl;
-                setAvatar(avatarUrl);
-                localStorage.setItem('avatarUrl', avatarUrl); 
-                handleDialogClose(); 
-            })
-            .catch((error) => {
-                console.error('Error uploading avatar:', error);
-                alert('Failed to upload avatar');
-            });
+
+            axios
+                .post('http://localhost:8000/api/users/upload-avatar', formData, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                })
+                .then((response) => {
+                    const avatarUrl = response.data.avatarUrl;
+                    setAvatar(avatarUrl);
+                    localStorage.setItem('avatarUrl', avatarUrl);
+                    setOpenDialog(false);
+                })
+                .catch((error) => {
+                    console.error('Error uploading avatar:', error);
+                    alert('Failed to upload avatar');
+                });
         }
     };
 
+    const handleUpdateProfile = () => {
+        // Gửi yêu cầu cập nhật tên hiển thị và email
+        axios
+            .post(
+                'http://localhost:8000/api/users/update-profile',
+                { displayName, email },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            )
+            .then(() => {
+                alert('Cập nhật thông tin thành công!');
+                localStorage.setItem('displayName', displayName);
+                localStorage.setItem('email', email);
+            })
+            .catch((error) => {
+                console.error('Error updating profile:', error);
+                alert('Không thể cập nhật thông tin!');
+            });
+    };
+    const handleNavigateHome = () => {
+        navigate('/'); // Điều hướng về trang chủ
+    };
     return (
         <Box
             sx={{
-                padding: '20px',
+                padding: '15px',
                 display: 'flex',
                 flexDirection: 'column',
-                justifyContent: 'center',
                 alignItems: 'center',
-                textAlign: 'center',
-                gap: '20px',
+                gap: '15px',
+                background: '#f9f9f9',
+                borderRadius: '10px',
+                boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+                maxWidth: '500px',
+                margin: 'auto',
+                marginTop: '20px',
             }}
         >
-            <h2 style={{ fontWeight: 600 }}>Quản lý tài khoản</h2>
+            <Typography variant="h4" sx={{ fontWeight: 600, color: '#333' }}>
+                Quản lý tài khoản
+            </Typography>
 
             {/* Avatar Section */}
             <Box>
-                <label htmlFor="avatar-upload" style={{ cursor: 'pointer' }}>
-                    <img
-                        src={avatar || 'defaultAvt.jpg'}
-                        alt="Avatar"
-                        style={{
-                            width: '120px',
-                            height: '120px',
-                            borderRadius: '50%',
-                            border: '3px solid #f5f5f5',
-                            boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
-                            objectFit: 'cover',
-                        }}
-                    />
-                </label>
-                <input
-                    id="avatar-upload"
-                    type="file"
-                    onChange={handleFileChange}
-                    style={{ display: 'none' }}
+                <img
+                    src={avatar || 'defaultAvt.jpg'}
+                    alt="Avatar"
+                    style={{
+                        width: '120px',
+                        height: '120px',
+                        borderRadius: '50%',
+                        border: '4px solid #1976d2',
+                        boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
+                        objectFit: 'cover',
+                        marginBottom: '10px',
+                    }}
                 />
-            </Box>
-
-            {/* Section thay đổi avatar */}
-            <Box sx={{ marginTop: '20px' }}>
                 <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={handleDialogOpen}
+                    variant="outlined"
+                    onClick={() => setOpenDialog(true)}
                     sx={{
-                        padding: '8px 20px',
-                        fontSize: '16px',
                         textTransform: 'none',
-                        boxShadow: '0 3px 6px rgba(0,0,0,0.1)',
+                        marginTop: '10px',
                     }}
                 >
-                    Cập nhật ảnh mới
+                    Cập nhật ảnh đại diện
                 </Button>
             </Box>
 
-            {/* Dialog để upload avatar */}
-            <Dialog open={openDialog} onClose={handleDialogClose}>
-                <DialogTitle>Cập nhật ảnh mới</DialogTitle>
+            {/* Input Fields */}
+            <Box sx={{ width: '60%', display: 'flex', flexDirection: 'column', gap: '15px' }}>
+                <TextField
+                    label="Tên hiển thị"
+                    value={displayName}
+                    onChange={(e) => setDisplayName(e.target.value)}
+                    fullWidth
+                    variant="outlined"
+                />
+                <TextField
+                    label="Email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    fullWidth
+                    variant="outlined"
+                />
+                <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={handleUpdateProfile}
+                    sx={{
+                        textTransform: 'none',
+                        fontWeight: 500,
+                        fontSize: '16px',
+                    }}
+                >
+                    Cập nhật thông tin
+                </Button>
+                <Button
+                    variant="outlined"
+                    color="secondary"
+                    onClick={handleNavigateHome}
+                    sx={{
+                        textTransform: 'none',
+                        fontWeight: 500,
+                        fontSize: '16px',
+                        color: "black",
+                    }}
+                >
+                    Quay về trang chủ
+                </Button>
+            </Box>
+
+            {/* Dialog for updating avatar */}
+            <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
+                <DialogTitle>Cập nhật ảnh đại diện</DialogTitle>
                 <DialogContent>
                     <input
                         type="file"
@@ -128,19 +192,10 @@ const AccountManagement = () => {
                     />
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleDialogClose} color="primary">
+                    <Button onClick={() => setOpenDialog(false)} color="primary">
                         Hủy
                     </Button>
-                    <Button
-                        onClick={handleSave}
-                        color="primary"
-                        autoFocus
-                        sx={{
-                            padding: '8px 20px',
-                            textTransform: 'none',
-                            fontSize: '16px',
-                        }}
-                    >
+                    <Button onClick={handleAvatarSave} color="primary">
                         Lưu
                     </Button>
                 </DialogActions>

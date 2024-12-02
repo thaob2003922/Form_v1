@@ -13,7 +13,7 @@ import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import axios from 'axios';
-
+import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import "./reducer.js"
 import { actionTypes } from './reducer.js';
 import { useStateValue } from './StateProvider.js';
@@ -25,7 +25,7 @@ function QuestionForm() {
     const token = localStorage.getItem('token');
     const [questions, setQuestions] = useState(
         [{
-            questionText: "Câu hỏi",
+           
             questionType: "radio",
             options: [
                 { optionText: "Tùy chọn 1" }
@@ -53,6 +53,31 @@ function QuestionForm() {
         setValue(event.target.value);
     };
     const [inputValue, setInputValue] = useState('');
+    const [showScroll, setShowScroll] = useState(false);
+
+    // Kiểm tra khi người dùng cuộn xuống
+    const checkScrollTop = () => {
+        if (!showScroll && window.scrollY > 300) {
+            setShowScroll(true);
+        } else if (showScroll && window.scrollY <= 300) {
+            setShowScroll(false);
+        }
+    };
+
+    // Cuộn lên đầu trang
+    const scrollToTop = () => {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth',
+        });
+    };
+
+    useEffect(() => {
+        window.addEventListener('scroll', checkScrollTop);
+        return () => {
+            window.removeEventListener('scroll', checkScrollTop);
+        };
+    }, [showScroll]);
 
     useEffect(() => {setDocName(doc_name)},[doc_name])
     useEffect(() => {
@@ -76,7 +101,7 @@ function QuestionForm() {
                         
                     });
 
-                    // console.log('response_in_query ', response.data);
+                    console.log('response_in_query ', response.data);
                     const question_data = response.data.questions;
                     const doc_name = response.data.documentName;
                     const doc_descip = response.data.documentDescription;
@@ -133,9 +158,9 @@ function QuestionForm() {
     function addOption(i) {
         var optionsOfQuestion = [...questions];
         if (optionsOfQuestion[i].questionText!== "text" && optionsOfQuestion[i].options.length < 5) {
-            optionsOfQuestion[i].options.push({ optionText: "Option " + (optionsOfQuestion[i].options.length + 1) })
+            optionsOfQuestion[i].options.push({ optionText: "Tùy chọn " + (optionsOfQuestion[i].options.length + 1) })
         } else {
-            console.log("Max 5 options");
+            console.log("Tối đa 5 tùy chọn");
 
         }
         setQuestions(optionsOfQuestion);
@@ -389,6 +414,12 @@ function QuestionForm() {
                     <div className='save_form'>
                         <Button variant='contained' color='primary' onClick={commitToDB} style={{ fontSize: "14px" }}>Lưu</Button>
                     </div>
+                </div>
+                <div
+                    className={`scroll-to-top ${showScroll ? 'show' : ''}`}
+                    onClick={scrollToTop}
+                >
+                    <ArrowUpwardIcon style={{ fontSize: '30px', color: '#fff' }} />
                 </div>
             </div>
         </div>

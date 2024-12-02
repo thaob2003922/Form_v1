@@ -22,7 +22,6 @@
     border-top: 8px solid #F8DAE9;
     border-radius: 8px;
     padding: 15px 25px;
-    text-transform: capitalize;
     margin-bottom: 8px;
     width: 100%; /* Đặt chiều rộng đầy đủ */
     max-width: 600px; /* Giới hạn chiều rộng tối đa */
@@ -32,7 +31,6 @@
     background-color: white;
     border-radius: 8px;
     padding: 30px 25px;
-    text-transform: capitalize;
     margin-bottom: 8px;
     width: 100%; 
     max-width: 600px; 

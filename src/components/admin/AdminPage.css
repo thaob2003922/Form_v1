@@ -1,4 +1,26 @@
-/* Cập nhật kiểu dáng cho bảng */
+.admin-container {
+  padding: 20px;
+  background-color: #f4f6f9;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.admin-content {
+  background-color: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 800px;
+  text-align: center;
+}
+
+.admin-header {
+  font-size: 2rem;
+  font-weight: 600;
+  color: #333;
+}
 .table-all-users {
     margin: 20px auto;  /* Tạo khoảng cách từ các phần tử khác */
     padding: 10px;

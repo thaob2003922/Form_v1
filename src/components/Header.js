@@ -120,7 +120,6 @@ function Header() {
                 />
                 <div className="dropdown">
                     {noResults && <div>Không tìm thấy kết quả phù hợp</div>}
-                    {/* {noResults && <div>No matching results found for your search</div>} */}
                     {results.map((item) => (
                         <div key={item._id} onClick={() => handleSelect(item.documentId)}>
                             {item.documentName}

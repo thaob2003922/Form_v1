@@ -73,7 +73,7 @@ const ResponsesTable = ({ docId, token }) => {
     return (
         <div>
             <button onClick={exportToExcel} className="export-button">
-            <span className="button-text">Export to Excel</span>
+            <span className="button-text">Xuất ra Excel</span>
                 <DownloadIcon className='downloadIcon'/>
             </button>
             <table>
@@ -111,7 +111,7 @@ const ResponsesTable = ({ docId, token }) => {
                 <div className="modal-overlay" onClick={closeModal}>
                     <div className="modal-content" onClick={(e) => e.stopPropagation()}>
                         <p>{selectedContent}</p>
-                        <button onClick={closeModal}>Close</button>
+                        <button onClick={closeModal}>Đóng</button>
                     </div>
                 </div>
             )}

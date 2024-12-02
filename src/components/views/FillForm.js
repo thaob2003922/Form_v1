@@ -36,12 +36,12 @@ const FillForm = () => {
     const handleSubmit = () => {
         // Kiểm tra nếu có token và câu trả lời đã được điền đầy đủ
         if (!token) {
-            alert('Please login to submit your answers');
+            alert('Vui lòng đăng nhập để gửi câu trả lời của bạn');
             return;
         }
 
         if (Object.keys(answers).length !== questions.length) {
-            alert('Please answer all questions');
+            alert('Hãy trả lời tất cả câu hỏi!');
             return;
         }
 
@@ -69,7 +69,7 @@ const FillForm = () => {
                     navigate('/');
                 })
                 .catch(error => {
-                    console.error('Error submitting answers:', error);
+                    console.error('Lỗi gửi câu trả lời:', error);
                 });
         }
     };
@@ -327,7 +327,7 @@ const FillForm = () => {
 
                 <div className="user_form_submit">
                     <Button variant="contained" color="primary" style={{ fontSize: "14px" }} onClick={handleSubmit}>
-                        Submit
+                        Nộp
                     </Button>
                 </div>
             </div>

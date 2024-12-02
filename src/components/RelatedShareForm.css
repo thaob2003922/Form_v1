@@ -3,24 +3,61 @@
     margin-left: 160px;
     margin-right: 160px;
     display: grid;
-    grid-template-columns: repeat(3, 1fr); /* Chia 3 cột cho màn hình desktop */
-    gap: 20px; /* Khoảng cách giữa các phần tử */
+    grid-template-columns: repeat(4, 1fr); /* Chia 3 cột cho màn hình desktop */
+    gap: 10px; /* Khoảng cách giữa các phần tử */
 }
 
-.userform-ctn div {
+/* Căn chỉnh h4 và checkbox trên cùng một dòng */
+.doc_card_content .doc_card_header {
     display: flex;
-    align-items: center; /* Căn chỉnh checkbox và tên tài liệu ngang hàng */
+    justify-content: space-between; /* Chia đều khoảng cách giữa h4 và checkbox */
+    align-items: center; /* Căn chỉnh theo chiều dọc */
 }
 
-.userform-ctn p {
-    margin-right: 15px; /* Khoảng cách giữa text và checkbox */
+.doc_card_content h4 {
+    font-size: 16px;
+    font-weight: bold;
+    margin: 0; /* Xóa margin mặc định */
 }
 
-/* Media query cho màn hình di động */
+.userform-item {
+    text-decoration: none;
+    color: inherit;
+    margin-top: 20px;
+    margin-left: 0;
+}
+
+.doc_card {
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    background-color: #fff;
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+    /* overflow: hidden; */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.doc_image {
+    height: 160px;
+    width: 100%;
+    object-fit: cover;
+}
+
 @media (max-width: 768px) {
     .userform-ctn {
         grid-template-columns: 1fr; /* Chia 1 cột cho màn hình di động */
         margin-left: 20px; /* Giảm khoảng cách bên trái */
         margin-right: 20px; /* Giảm khoảng cách bên phải */
     }
+    /* Nếu cần thay đổi layout cho h4 và checkbox trên mobile */
+    .doc_card_content .doc_card_header {
+        flex-direction: column; /* Sắp xếp theo cột nếu trên màn hình di động */
+        align-items: flex-start;
+    }
+}
+ 
+.related_left{
+    margin-left: 160px;
+    margin-top: 10px;
 }

@@ -10,6 +10,8 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { Menu, MenuItem, Button } from "@mui/material";
+import RelatedShareForm from './RelatedShareForm';
 function Mainbody() {
     const navigate = useNavigate();
 
@@ -65,10 +67,23 @@ function Mainbody() {
         year: 'numeric',
         month: 'long',
         day: 'numeric',
-        // hour: '2-digit',
-        // minute: '2-digit',
-        // hour12: true, // sử dụng 12 giờ (AM/PM)
     });
+
+    const [anchorEl, setAnchorEl] = useState(null);
+    const [selectedOption, setSelectedOption] = useState("Do tôi sở hữu");
+
+    const handleClick = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
+
+    const handleSelect = (option) => {
+        setSelectedOption(option);
+        handleClose();
+    };
     return (
         <div className='mainbody'>
             <div className='mainbody_top'>
@@ -76,64 +91,77 @@ function Mainbody() {
                     Biểu mẫu gần đây
                 </div>
                 <div className='mainbody_top_right'>
-                    <div className='mainbody_top_center' style={{ fontSize: "14px", marginRight: "125px" }}>Do tôi sở hữu<ArrowDropDownIcon /></div>
-                    <IconButton>
-                        <StorageIcon style={{ fontSize: "16px", color: "black" }} />
-                    </IconButton>
-                    <IconButton>
-                        <FolderOpenIcon style={{ fontSize: "16px", color: "black" }} />
-                    </IconButton>
+                    <div className="mainbody_top_center" style={{ fontSize: "14px", marginRight: "125px" }}>
+                        <Button
+                            onClick={handleClick}
+                            endIcon={<ArrowDropDownIcon />}
+                            style={{ textTransform: "none", fontSize: "15px", color: selectedOption === "Do tôi sở hữu" ? "black" : "red", }}
+                        >
+                            {selectedOption}
+                        </Button>
+                        <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleClose}>
+                            <MenuItem onClick={() => handleSelect("Do tôi sở hữu")}>Do tôi sở hữu</MenuItem>
+                            <MenuItem onClick={() => handleSelect("Không phải do tôi sở hữu")}>
+                                Không phải do tôi sở hữu
+                            </MenuItem>
+                        </Menu>
+                        <IconButton>
+                            <StorageIcon style={{ fontSize: "16px", color: "black" }} />
+                        </IconButton>
+                        <IconButton>
+                            <FolderOpenIcon style={{ fontSize: "16px", color: "black" }} />
+                        </IconButton>
+                    </div>
                 </div>
             </div>
-            <div className='mainbody_docs'>{
-                files.map((ele, index) => (
-                    <div key={index} className='doc_card' onClick={() => {
-                        navigate_to(ele)
-                    }}>
-                        <img className="doc_image" src={doc_image} alt='' />
-                        <div className='doc_card_content'>
-                            <h4 style={{
-                                overflow: "hidden",
-                                whiteSpace: "nowrap",
-                                textOverflow: "ellipsis"
-                            }}>
-                                {ele?.documentName ? ele.documentName : "Untitled Doc"}</h4>
-
-                            <div className='doc_content'>
-                                <div className='content_left'>
-                                    <StorageIcon style={{ color: "white", fontSize: "12px", backgroundColor: "6E2594", padding: "3px", marginRight: "3px", borderRadius: "2px" }} />
-                                    Đã mở {currentDateTime}
-                                </div>
-
-                                <div className='content_right'>
-                                    <MoreVertIcon
-                                        onClick={(e) => {
-                                            e.stopPropagation(); // Ngăn không cho sự kiện click lan ra ngoài
-                                            setMenuOpen(menuOpen === index ? null : index); // Chuyển đổi trạng thái menu
-                                        }}
-                                        style={{ fontSize: "16px", color: "grey", cursor: "pointer" }}
-                                    />
-                                    {menuOpen === index && (
-                                        <div className="dropdown-menu" style={{ position: 'absolute', background: 'white', border: '1px solid grey', borderRadius: '4px', marginTop: '8px', zIndex: 1000 }}>
-                                            <div
-                                                onClick={() => { handleEdit(ele.documentId); setMenuOpen(null); }}
-                                                style={{ padding: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center' }}
-                                            >
-                                                <EditIcon style={{ marginRight: '4px' }} />Đổi tên
+            <div className='mainbody_docs'>
+                {selectedOption === "Do tôi sở hữu" ? (
+                    files.map((ele, index) => (
+                        <div key={index} className='doc_card' onClick={() => navigate("/form/" + ele.documentId)}>
+                            <img className="doc_image" src={doc_image} alt='Document Thumbnail' />
+                            <div className='doc_card_content'>
+                                <h4>{ele?.documentName || "Untitled Doc"}</h4>
+                                <div className='doc_content'>
+                                    <div className='content_left'>
+                                        <StorageIcon
+                                            style={{
+                                                color: "white",
+                                                fontSize: "12px",
+                                                backgroundColor: "#6E2594",
+                                                padding: "3px",
+                                                marginRight: "3px",
+                                                borderRadius: "2px"
+                                            }}
+                                        />
+                                        Đã mở {currentDateTime}
+                                    </div>
+                                    <div className='content_right'>
+                                        <MoreVertIcon
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                setMenuOpen(menuOpen === index ? null : index);
+                                            }}
+                                            style={{ fontSize: "16px", color: "grey", cursor: "pointer" }}
+                                        />
+                                        {menuOpen === index && (
+                                            <div className="dropdown-menu">
+                                                <div onClick={() => { handleEdit(ele.documentId); setMenuOpen(null); }}>
+                                                    <EditIcon style={{ marginRight: '4px' }} />Đổi tên
+                                                </div>
+                                                <div onClick={() => { handleDelete(ele.documentId); setMenuOpen(null); }}>
+                                                    <DeleteIcon style={{ marginRight: '4px', color: 'red' }} />Xóa
+                                                </div>
                                             </div>
-                                            <div
-                                                onClick={() => { handleDelete(ele.documentId); setMenuOpen(null); }}
-                                                style={{ padding: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center', color: 'red' }}
-                                            >
-                                                <DeleteIcon style={{ marginRight: '4px' }} />Xóa
-                                            </div>
-                                        </div>
-                                    )}
+                                        )}
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>))
-            }
+
+                    ))
+                ) : (
+                    <RelatedShareForm />
+                )}
             </div>
         </div>
     )

@@ -61,11 +61,20 @@ function UserForm() {
 
     function submit() {
         const post_answer_data = {};
-        answer.forEach((ele) => {
-            post_answer_data[ele.question] = ele.answer;
-        });
-        console.log("post_answer_data:", post_answer_data);
         
+        answer.forEach((ele) => {
+            let cleanedAnswer = ele.answer
+                .split(',')                // Tách câu trả lời bằng dấu phẩy
+                .map(item => item.trim())  // Loại bỏ khoảng trắng thừa của từng phần tử
+                .filter(item => item)      // Loại bỏ phần tử rỗng nếu có
+                .join(',');                // Ghép lại thành chuỗi với dấu phẩy
+            
+            // Gán câu trả lời đã làm sạch vào đối tượng post_answer_data
+            post_answer_data[ele.question] = cleanedAnswer;
+        });
+    
+        console.log("post_answer_data:", post_answer_data);
+    
         axios.post(`http://localhost:8000/api/userResponse/submit/${id}`, {
             documentId: documentId,
             userId: userId,
@@ -84,7 +93,7 @@ function UserForm() {
         .catch(error => {
             console.error("Lỗi gửi câu trả lời: ", error);
         });
-    }
+    }    
 
     return (
         <div className="submit">
@@ -170,7 +179,7 @@ function UserForm() {
                         ))
                     }
                     <div className="user_form_submit">
-                        <Button variant="contained" color="primary" onClick={submit} style={{ fontSize: "14px" }}>Submit</Button>
+                        <Button variant="contained" color="primary" onClick={submit} style={{ fontSize: "14px" }}>Nộp</Button>
                     </div>
                     <div className="user_footer">
                         WWPigeon

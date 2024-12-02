@@ -7,8 +7,6 @@ import QuestionForm from './QuestionForm';
 import { IconButton, Switch } from '@mui/material';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { Typography } from "@mui/material";
-// import axios from 'axios';
-// import { useParams } from 'react-router-dom';
 import ResponsesTable from './views/ResponsesTable';
 const useStyles = makeStyles({
     root: { flexGrow: 1 },

@@ -17,7 +17,7 @@ const Signup = () => {
     const handleRegister = async (e) => {
         e.preventDefault();
         if (!validatePassword(password)) {
-            setMessage("Mật khẩu phải có ít nhất 8 ký tự, bao gồm cả chữ cái và ký tự đặc biệt.");
+            alert("Mật khẩu phải có ít nhất 8 ký tự, bao gồm cả chữ cái và ký tự đặc biệt.");
             return;
         }
         try {

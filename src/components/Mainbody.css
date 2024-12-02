@@ -32,41 +32,93 @@
     margin-top: 20px;
 }
 
-.doc_card{
+.doc_card {
     display: flex;
     flex-direction: column;
     box-sizing: border-box;
-    width: 200px;
+    width: 220px; 
     margin-right: 20px;
+    margin-bottom: 20px; 
+    border: 1px solid #e0e0e0; /* Viền nhạt cho thẻ */
+    border-radius: 8px; /* Bo góc mềm mại */
+    
+    background-color: #ffffff; /* Màu nền trắng */
+    transition: transform 0.2s, box-shadow 0.2s; /* Hiệu ứng hover */
 }
 
-.doc_card:hover{
-    border: 1.5px solid #6E2594;
+.doc_card:hover {
+    transform: translateY(-5px); /* Di chuyển thẻ lên trên khi hover */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); /* Tăng bóng khi hover */
+    border: 1.5px solid #6E2594; /* Đổi viền khi hover */
 }
 
-.doc_image{
-    box-sizing: border-box;
-    height: 150px;
-    width: 196px;
+.doc_image {
+    height: 160px; /* Tăng kích thước ảnh */
+    width: 100%; /* Đảm bảo ảnh phủ kín thẻ */
+    object-fit: cover; /* Ảnh tự căn chỉnh theo khung */
+    border-bottom: 1px solid #e0e0e0; /* Đường ngăn cách giữa ảnh và nội dung */
 }
- 
-.doc_card_content{
+
+.doc_card_content {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    padding: 18px;
+    padding: 16px;
+    gap: 10px; 
 }
 
-.doc_content{
+.doc_card_content h4 {
+    font-size: 14px;
+    font-weight: 600;
+    color: #333333; /* Màu chữ đậm */
+    margin: 0;
+}
+
+.doc_content {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    padding: 5px;
+    align-items: center; /* Căn giữa các nội dung */
     font-size: 12px;
-    color: grey;
+    color: #6c757d; /* Màu chữ xám nhạt */
 }
-.content_left{
+
+.content_left {
     display: flex;
     flex-direction: row;
     align-items: center;
+    gap: 5px; /* Khoảng cách giữa icon và text */
+}
+
+.content_right {
+    position: relative; 
+    z-index: 1;
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 25px;
+    left: 100%;
+    background-color: #fff;
+    border: 1px solid #e0e0e0;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    z-index: 9999;
+    padding: 8px;
+    width: 150px;
+    pointer-events: auto;
+}
+
+.dropdown-menu div {
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    font-size: 14px;
+    color: #333333;
+    transition: background-color 0.2s;
+}
+
+.dropdown-menu div:hover {
+    background-color: #f0f0f0; /* Hiệu ứng hover */
 }
